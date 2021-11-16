@@ -12,6 +12,7 @@ namespace Intranet.Controllers
     [Authorize]
     public class AeronavesController : Controller
     {
+        //Este es le controlador Aero//hola 
         // GET: Aeronaves
         private IntranetDBEntities db = new IntranetDBEntities();
         // GET: Aeronaves
