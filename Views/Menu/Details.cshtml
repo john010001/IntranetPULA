@@ -1,0 +1,64 @@
+﻿@model AdminRP.Models.Profile.MENU
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+@* <!-- Page Style --> *@
+@section style {
+    <style>
+        /**/
+    </style>
+}
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">Detalle</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="row">
+        <div class="col col-12">
+            <div class="card admin-card">
+                <div class="p-3">
+                    <dl class="dl-horizontal m-0">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.descripcion_menu)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.descripcion_menu)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.nivel_menu)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.nivel_menu)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.url_menu)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.url_menu)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.principal_menu)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.principal_menu)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.imagen_menu)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.imagen_menu)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="p-3 pt-0">
+                    @Html.ActionLink("←Regresar", "Index")  
+                    @*@Html.ActionLink("Editar", "Edit", new { id = Model.Id_Menu })*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,751 @@
+﻿@model Intranet.ModelsApp.ResumenCanal
+@using System.Globalization;
+@{
+    ViewBag.Title = "Resumen";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+@*
+    <!-- Custom Plugin Style --> *@
+@section pluginStyle {
+    <!-- Chart.js -->
+    <link rel="stylesheet" href="~/content/css/chart.css">
+    <script src="~/content/js/chart.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js"></script> -->
+
+    <!-- Chartjs plugin Datalabels -->
+    <script src="~/content/js/chartjs-plugin-datalabels.js"></script>
+    
+    <script>
+        // Init the chartjs-plugin-datalabel
+        Chart.plugins.register(ChartDataLabels);
+
+        //Configuracion Global ChartJS
+        Chart.defaults.global.defaultFontFamily = "'Montserrat', 'Helvetica', sans-serif";
+        Chart.defaults.global.tooltips.backgroundColor = 'rgba(0,32,57,0.75)';
+        Chart.defaults.global.tooltips.titleFontStyle = "normal";
+    </script>
+}
+
+@*
+    <!-- Custom Page Style --> *@
+@section style {
+    <style>
+    </style>
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">RESUMEN DE VENTA</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="row">
+
+        <div class="col col-12 mb-4">
+            <div>
+                @using (Html.BeginForm())
+                {
+                    <div class="d-md-flex totalyearmounth">
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+
+                            <label for="ResumeByMonth"> Mes:</label>
+                            @Html.DropDownList("Month", null, htmlAttributes: new { @class = "form-control", @id = "ddlMonth" })
+                        </div>
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+                            <label for="ResumeByYear">Año:</label>
+                            @Html.DropDownList("Year", null, htmlAttributes: new { @class = "form-control", @id = "ddlYear" })
+                        </div>
+
+
+                        @*<div class="form-group  mr-sm-3">
+                            <br /> /
+
+                        </div>
+
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+
+                            <label for="ResumeByMonth"> Mes:</label>
+                            @Html.DropDownList("Month", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+                            <label for="ResumeByYear">Año:</label>
+                            @Html.DropDownList("Year", null, htmlAttributes: new { @class = "form-control" })
+                        </div>*@
+                        <div class="form-group d-sm-inline-block">
+                            <div class="h-100 d-flex align-items-end text-center">
+                                <button class="gn-btn-line-orange btn-icon mx-auto">Mostrar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col col-12 col-md-6 mb-4">
+            <div class="d-flex flex-column h-100">
+                <article class="card admin-card h-100 mb-4">
+                    <div class="h-100 d-flex justify-content-center">
+                        <div class="gn-databox-md">
+                            <div class="gn-bigdata-md">
+                                @Model.VentaDirecta.ToString("C0", CultureInfo.CurrentCulture)
+                            </div>
+                            <h3 class="gn-label-md mb-0">Ventas Directas</h3>
+                        </div>
+                    </div>
+                </article>
+                <article class="card admin-card h-100">
+                    <div class="h-100 d-flex justify-content-center">
+                        <div class="gn-databox-md">
+                            <div class="gn-bigdata-md">
+                                @Model.VentaIndirecta.ToString("C0", CultureInfo.CurrentCulture)
+                            </div>
+                            <h3 class="gn-label-md mb-0">Ventas Indirectas</h3>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+        <div class="col col-12 col-md-6 mb-4">
+            <div>
+                <div class="card admin-card">
+                    <div class="card-header">Ventas Directas vs Indirectas</div>
+                    <div class="p-3">
+                        <div class="pie-box-ventas-d-vs-i mx-auto" style="max-width: 360px;">
+                            <canvas id="form3chart-torta"></canvas>
+                            <script>
+                                function form3chart() {
+                                    var dataPie = [@Math.Truncate(Model.VentaDirecta) , @Math.Truncate(Model.VentaIndirecta)];
+                                    //Set
+                                    const labels = [
+                                        'Directa',
+                                        'Indirecta'
+                                    ];
+                                    const data = {
+                                        labels: labels,
+                                        datasets: [
+                                            {
+                                                backgroundColor: ['rgb(26,46,68)', 'rgb(144,166,179)'],
+                                                data: dataPie,
+                                            }
+                                        ]
+                                    };
+                                    const config = {
+                                        type: 'pie',
+                                        data,
+                                        options: {
+                                            legend: {
+                                                display: true, //leyendas
+                                        },
+                                        plugins: {
+                                                // labels: {
+                                                //     render: 'percentage',
+                                                //     fontColor: ['#FFF', '#FFF'],
+                                                //     fontSize: 24,
+                                                //     precision: 2
+                                                // },
+                                            datalabels: {
+                                                display: true,
+                                                color: '#FFF',
+                                                textAlign: 'center',
+                                                font: {
+                                                    size: 24
+                                                },
+                                                formatter: (value, ctx) => { // Porcentaje
+                                                    let sum = 0;
+                                                    let dataArr = ctx.chart.data.datasets[0].data;
+                                                    dataArr.map(data => {
+                                                        sum += data;
+                                                    });
+                                                    let percentage = (value*100 / sum).toFixed(2)+"%";
+                                                    return percentage;
+                                                }
+                                            }
+                                        }
+                                        }
+                                    };
+                                    //END Set
+
+                                    var myChartPie = new Chart(
+                                        document.getElementById('form3chart-torta'),
+                                        config
+                                    );
+
+                                    // Click on Canvas, show Modal
+                                    canvasDraw = document.getElementById('form3chart-torta'); // 1.Canvas
+                                    canvasDraw.onclick = function (evt) {
+                                        var activePoints = myChartPie.getElementsAtEvent(evt); // 2.Chart
+
+                                        console.log(activePoints);
+
+                                        if (activePoints[0]._index == 0) {
+                                            $('#modalListaIndirectas').modal('hide');
+                                            $('#modalListaDirectas').modal('show');
+                                        } else if (activePoints[0]._index == 1) {
+                                            $('#modalListaDirectas').modal('hide');
+                                            $('#modalListaIndirectas').modal('show');
+                                        }
+                                    };
+                                    // END CLick on Canvas
+                                };
+                                form3chart();
+                            </script>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="modalListaDirectas" tabindex="-1" aria-labelledby="modalLabelDirectas" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Resumen de ventas directas</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                @Html.Partial("_VentasDirectas", Model)
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="modalListaIndirectas" tabindex="-1" aria-labelledby="modalLabelIndirectas" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Resumen de ventas indirectas</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                @Html.Partial("_VentasIndirectas", Model)
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a id="download" download="torta.jpg" href="" onclick="downloadCanvas('form3chart-torta', this)">Descargar <i class="far fa-arrow-to-bottom"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col col-12 col-md-6 col-lg-6 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">Por Canal de venta</div>
+                <div class="py-3 px-2">
+                    <div class="px-3 d-flex align-items-center mb-4">
+                        @{
+                            string _canal = "";
+                            string _revenue = "";
+                            string _meta = "";
+
+                            foreach (var item in Model.PorCanal)
+                            {
+
+                                //item.Descripcion = "\'" + item.Descripcion + "\'";
+                                _canal += item.Descripcion + ",";
+                                _revenue += Math.Round(item.Revenue, 0).ToString() + ",";
+                                _meta += Math.Round(item.Meta, 0).ToString() + ",";
+                                //_revenue += item.Revenue.ToString() + ",";
+                                //_meta += "'" + item.Meta.ToString() + "',";
+
+                            }
+                            _canal = _canal.Trim(',');
+                            _revenue = "[" + _revenue.Trim(',') + "]";
+                            _meta = "[" + _meta.Trim(',') + "]";
+
+                        }
+                        <canvas id="bar-revenue"></canvas>
+                        <script>
+                            function HorBarChart() {
+                                //var dataAgeChartLabel = ['-20', '21 - 30', '31 - 40', '41 - 50', '51 - 60', '61+']
+                                //var dataAgeChart = [1400, 4651, 4213, 3684, 2654, 10]
+                                //var otherdataAgeChart = [1400, 4651, 4213, 3684, 2654, 10]
+
+                                //var dataAgeChartLabel = ['A','P','B','Q','O','A','I','C','BS','BSX','OF','Ae','BSPA','Corp','Ven','Inte','ARC']
+
+                                var _canal = "@_canal";
+                                var dataAgeChartLabel = _canal.split(",");
+                                var dataAgeChart = @_revenue;
+                                var otherdataAgeChart = @_meta;
+
+                                //Set
+                                const labels = dataAgeChartLabel;
+
+                                const data = {
+                                    labels: labels,
+                                    datasets: [
+                                    {
+                                        label: 'Revenue',
+                                        backgroundColor: 'rgb(26,46,68)',
+                                        data: dataAgeChart,
+                                    },
+                                    {
+                                        label: 'Meta',
+                                        backgroundColor: 'rgb(144,166,179)',
+                                        data: otherdataAgeChart,
+                                    }
+                                    ]
+                                };
+                                const config = {
+                                    type: 'horizontalBar',
+                                    data,
+                                    options: {
+                                        legend: {
+                                            display: true //Oculta las leyendas
+                                        },
+                                        plugins: {
+                                            datalabels: {
+                                                display: false, // Datalabel
+                                            }
+                                        }
+                                    }
+                                };
+                                //END Set
+
+                                var myChartBarHor = new Chart(
+                                    document.getElementById('bar-revenue'),
+                                    config
+                                );
+
+                                // Click on Canvas, show Modal
+                                canvasDraw = document.getElementById('bar-revenue'); // 1.Canvas
+                                canvasDraw.onclick = function(evt) {
+                                    var activePoints = myChartBarHor.getElementsAtEvent(evt); // 2.Chart
+                                    if (activePoints[0]) {
+                                    var chartData = activePoints[0]['_chart'].config.data;
+                                    var idx = activePoints[0]['_index'];
+
+                                    var label = chartData.labels[idx];
+                                    var value = chartData.datasets[0].data[idx];
+                                    var secvalue = chartData.datasets[1].data[idx];
+
+                                    //var url = "http://example.com/?label=" + label + "&value=" + value;
+                                    console.log(label + value + secvalue);
+
+
+                                    $.ajax({
+                                        type: "GET",
+                                        url: '@Url.Action("VentaCanalDetalle", "Ventas")',
+                                        data: {
+                                            month: $('#ddlMonth').val(),
+                                            anio: $('#ddlYear').val(),
+                                            canal: label,
+                                        },
+                                        dataType: "html",
+                                        success: function (response) {
+                                            $('.modal-body-venta-canal').html(response);
+                                            $('.modal-body-venta-canal').show('fast');
+                                            $('#lblCanal').text(label);
+                                            $('#modalVenta').modal('show');
+                                        },
+                                        error: function (response) {
+                                            $('.modal-body-venta-canal').html(response);
+                                            $('.modal-body-venta-canal').show('fast');
+                                            $('#lblCanal').text(label);
+                                            $('#modalVenta').modal('show');
+                                        }
+                                    });
+                                    //$('#modalVenta').modal('show')
+                                    //alert(url);
+                                    }
+                                };
+                                // END CLick on Canvas
+                            }
+                            HorBarChart();
+                        </script>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="modalVenta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title"><span class="font-weight-bold" id="lblCanal"></span> - Detalle emisor</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="p-3 modal-body-venta-canal">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <a id="download" download="bar-revenue.jpg" href="" onclick="downloadCanvas('bar-revenue', this)">Descargar <i class="far fa-arrow-to-bottom"></i></a>
+                    </div>
+                    <hr />
+
+                    <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                        <thead>
+                            <tr>
+                                <th>Canal</th>
+                                <th class="text-center">Revenue</th>
+                                <th class="text-center">Meta</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var item in Model.PorCanal)
+                                {
+
+                                    <tr>
+                                        <td>@item.Descripcion</td>
+                                        <td class="item-data-sm text-right">
+                                            @item.Revenue.ToString("N0",
+        CultureInfo.CurrentCulture)
+                                        </td>
+                                        <td class="item-data-sm text-right">
+                                            @item.Meta.ToString("N0",
+            CultureInfo.CurrentCulture)
+                                        </td>
+
+                                    </tr>
+
+                                }
+
+
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+
+        <div class="col col-12 col-md-6 col-lg-6 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">Por Acumulado</div>
+                <div class="py-3 px-2">
+                    <div class="px-3 d-flex align-items-center mb-4">
+                        @{
+
+                            string _dia = "";
+                            string _revenueDia = "";
+                            string _acumuladoDia = "";
+                            string _MetaDia = "";
+                            foreach (var item in Model.porFecha)
+                            {
+
+                                //item.Descripcion = "\'" + item.Descripcion + "\'";
+                                _dia += item.Fecha.Day.ToString() + ",";
+                                _revenueDia += Math.Round(item.Revenue, 0).ToString() + ",";
+                                _acumuladoDia += Math.Round(item.Acumulado, 0).ToString() + ",";
+                                _MetaDia += Math.Round(item.Meta, 0).ToString() + ",";
+                                //_revenue += item.Revenue.ToString() + ",";
+                                //_meta += "'" + item.Meta.ToString() + "',";
+
+                            }
+                            _dia = _dia.Trim(',');
+                            _revenueDia = "[" + _revenueDia.Trim(',') + "]";
+                            _acumuladoDia = "[" + _acumuladoDia.Trim(',') + "]";
+                            _MetaDia = "[" + _MetaDia.Trim(',') + "]";
+                        }
+                        <canvas id="bar-resumen"></canvas>
+                        <script>
+                            function BarChart() {
+                                //var dataAgeChartLabel = ['-20', '21 - 30', '31 - 40', '41 - 50', '51 - 60', '61+']
+                                //var dataAgeChart = [1400, 4651, 4213, 3684, 2654, 10]
+                                //var otherdataAgeChart = [1400, 4651, 4213, 3684, 2654, 10]
+
+                                //var dataAgeChartLabel = ['A','P','B','Q','O','A','I','C','BS','BSX','OF','Ae','BSPA','Corp','Ven','Inte','ARC']
+
+                                var _dia = "@_dia";
+                                var dataAgeChartLabel = _dia.split(",");
+                                var dataAgeChart = @_acumuladoDia;
+                                var otherdataAgeChart = @_MetaDia;
+
+                                //Set
+                                const labels = dataAgeChartLabel;
+
+                                const data = {
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            label: 'Acumulado',
+                                            backgroundColor: 'rgb(26,46,68)',
+                                            data: dataAgeChart,
+                                            stack: 'combined',
+                                            order:2
+                                        },
+                                        {
+                                            label: 'Meta',
+                                           backgroundColor: 'rgb(0,0,0,0)',
+                                            borderColor: 'rgba(144,166,179)',
+                                            data: otherdataAgeChart,
+                                            type: 'line',
+                                            stack: 'combined',
+                                            order: 1
+
+                                        }
+                                    ]
+
+                                };
+                                const config = {
+                                    type: 'bar',
+                                    data,
+                                    options: {
+                                        responsive: true,
+                                        legend: {
+                                            display: false //Oculta las leyendas
+                                        },
+                                        scales: {
+                                            xAxes: [{
+                                                ticks: {
+                                                    display: true
+                                                }
+                                            }]
+                                        },
+                                        plugins: {
+                                            datalabels: {
+                                                display: false // Datalabel
+                                            }
+                                        }
+                                    }, scales: {
+                                        y: {
+                                            stacked: true
+                                        }
+                                    }
+
+                                };
+                                //END Set
+
+                                var myChartBar = new Chart(
+                                    document.getElementById('bar-resumen'),
+                                    config
+                                );
+                            }
+                            BarChart();
+                        </script>
+                    </div>
+                    <div class="text-center">
+                        <a id="download" download="bar-resumen.jpg" href="" onclick="downloadCanvas('bar-resumen', this)">Descargar <i class="far fa-arrow-to-bottom"></i></a>
+                    </div>
+                    <hr />
+
+                    <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th class="text-center">Revenue</th>
+                                <th class="text-center">Acumulado</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var item in Model.porFecha)
+                                {
+
+                                    <tr>
+                                        <td class="text-right">@item.Fecha.Day</td>
+                                        <td class="item-data-sm text-right">
+                                            @item.Revenue.ToString("N0",
+        CultureInfo.CurrentCulture)
+                                        </td>
+                                        <td class="item-data-sm text-right">
+                                            @item.Acumulado.ToString("N0",
+            CultureInfo.CurrentCulture)
+                                        </td>
+
+                                    </tr>
+
+                                }
+
+
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+
+
+
+        <div class="col col-12 col-md-6 col-lg-6 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">Por Acumulado</div>
+                <div class="py-3 px-2">
+                    <div class="px-3 d-flex align-items-center mb-4">
+                        @{
+
+                            string _tipo = "";
+                            string _revenueTipo = "";
+                            foreach (var item in Model.porDocumento)
+                            {
+
+
+                                _tipo += item.Tipo.ToString() + ",";
+                                _revenueTipo += Math.Round(item.Total, 0).ToString() + ",";
+
+
+                            }
+
+                            _tipo = _tipo.Trim(',');
+                            _revenueTipo = "[" + _revenueTipo.Trim(',') + "]";
+                        }
+                        <canvas id="bar-tipoDocumento"></canvas>
+                        <script>
+                            function BarChartDocumento() {
+                                //var dataAgeChartLabel = ['-20', '21 - 30', '31 - 40', '41 - 50', '51 - 60', '61+']
+                                //var dataAgeChart = [1400, 4651, 4213, 3684, 2654, 10]
+                                //var otherdataAgeChart = [1400, 4651, 4213, 3684, 2654, 10]
+
+                                //var dataAgeChartLabel = ['A','P','B','Q','O','A','I','C','BS','BSX','OF','Ae','BSPA','Corp','Ven','Inte','ARC']
+
+                                var _tipo = "@_tipo";
+                                var dataAgeChartLabel = _tipo.split(",");
+                                var dataAgeChart = @_revenueTipo;
+
+
+                                //Set
+                                const labels = dataAgeChartLabel;
+
+                                const data = {
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            label: 'Acumulado',
+                                            backgroundColor: 'rgb(26,46,68)',
+                                            data: dataAgeChart,
+                                            stack: 'combined',
+                                            order:2
+                                        }
+
+                                    ]
+
+                                };
+                                const config = {
+                                    type: 'bar',
+                                    data,
+                                    options: {
+                                        responsive: true,
+                                        legend: {
+                                            display: false //Oculta las leyendas
+                                        },
+                                        scales: {
+                                            xAxes: [{
+                                                ticks: {
+                                                    display: true
+                                                }
+                                            }]
+                                        },
+                                        plugins: {
+                                            datalabels: {
+                                                display: false // Datalabel
+                                            }
+                                        }
+                                    }, scales: {
+                                        y: {
+                                            stacked: true
+                                        }
+                                    }
+
+                                };
+                                //END Set
+
+                                var myChartBar = new Chart(
+                                    document.getElementById('bar-tipoDocumento'),
+                                    config
+                                );
+                            }
+                            BarChartDocumento();
+                        </script>
+                    </div>
+                    <div class="text-center">
+                        <a id="download" download="bar-tipoDocumento.jpg" href="" onclick="downloadCanvas('bar-tipoDocumento', this)">Descargar <i class="far fa-arrow-to-bottom"></i></a>
+                    </div>
+                    <hr />
+
+                    <table class="table table-bordered table-responsive-sm table-admin-full m-0">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th class="text-center">Revenue</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var item in Model.porDocumento)
+                                {
+
+                                    <tr>
+                                        <td class="text-right">@item.Tipo</td>
+                                        <td class="item-data-sm text-right">
+                                            @item.Total.ToString("N0",
+        CultureInfo.CurrentCulture)
+                                        </td>
+
+
+                                    </tr>
+
+                                }
+
+
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        //var canvas = document.getElementById("bar-revenue");
+        //var ctx = canvas.getContext("2d");
+        //var myNewChart = new Chart(ctx, {
+        //    type: 'horizontalBar',
+        //    data: dataAgeChart
+        //});
+
+        //canvas.onclick = function (evt) {
+        //    var activePoints = myNewChart.getElementsAtEvent(evt);
+        //    if (activePoints[0]) {
+        //        var chartData = activePoints[0]['_chart'].config.data;
+        //        var idx = activePoints[0]['_index'];
+
+        //        var label = chartData.labels[idx];
+        //        var value = chartData.datasets[0].data[idx];
+
+        //        var url = "http://example.com/?label=" + label + "&value=" + value;
+        //        console.log(url);
+        //        alert(url);
+        //    }
+        //};
+        ////....
+    });
+
+
+</script>
+

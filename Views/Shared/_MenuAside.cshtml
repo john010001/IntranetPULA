@@ -1,0 +1,151 @@
+@{
+
+    var userClaims = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+    //You get the user’s first and last name below:
+    var usuario = userClaims.FindFirst("preferred_username").Value;
+
+
+    List<string> _directivos = new List<string>();
+
+    _directivos.Add("g.preziuso@plusultra.com");
+    _directivos.Add("a.delgado@plusultra.com");
+    _directivos.Add("r.roselli@plusultra.com");
+    _directivos.Add("j.carrano@plusultra.com");
+    _directivos.Add("f.arellano@plusultra.com");
+    _directivos.Add("z.aroutin@plusultra.com");
+    _directivos.Add("testpremier2@plusultra.com");
+
+    List<string> _admin = new List<string>();
+
+    _admin.Add("testpremier@plusultra.com");
+    _admin.Add("f.arellano@plusultra.com");
+    _admin.Add("j.carrano@plusultra.com");
+
+    List<string> _ventasVolados = new List<string>();
+
+    _ventasVolados.Add("j.carrano@plusultra.com");
+
+
+
+    List<string> _ocupaciones = new List<string>();
+
+    _ocupaciones.Add("l.montilla@plusultra.com");
+
+
+
+}
+
+<div class="sidebar-nav">
+    <h3 class="sidebar-nav-title">Menú</h3>
+    <ul class="nav-left">
+        @{
+            if (_admin.IndexOf(usuario) >= 0 || _directivos.IndexOf(usuario) >= 0 || _ocupaciones.IndexOf(usuario) >= 0 || _ventasVolados.IndexOf(usuario) >= 0)
+            {
+                <li class="nav-left-item">
+                    <a class="nav-left-link collapsed" data-toggle="collapse" data-target="#sidebar-nav-resumen" aria-expanded="false" aria-controls="profile-menu">Ventas <i class="fas fa-chevron-down ml-auto"></i></a>
+                    <div class="nav-left-submenu-dropdown collapse" id="sidebar-nav-resumen">
+                        <ul class="nav-left-submenu">
+                            @{
+
+                                if (_admin.IndexOf(usuario) >= 0 || usuario == "f.arellano@plusultra.com" || _ventasVolados.IndexOf(usuario) >= 0)
+                                {
+                                    <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("importar", "ventas")">Importar</a></li>
+                                }
+                                if (_admin.IndexOf(usuario) >= 0 || _directivos.IndexOf(usuario) >= 0 || _ocupaciones.IndexOf(usuario) >= 0 || _ventasVolados.IndexOf(usuario) >= 0)
+                                {
+                                    <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("resumen", "ventas")">Resumen</a></li>
+                                }
+
+                                if (_admin.IndexOf(usuario) >= 0 || usuario == "f.arellano@plusultra.com" || _ventasVolados.IndexOf(usuario) >= 0)
+                                {
+                                    <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("resumendiario", "ventas")">Por Fecha</a></li>
+                                    <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("resumendocumento", "ventas")">Por Documento</a></li>
+                                    <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="#!">Mensual</a></li>
+                                }
+                            }
+
+                        </ul>
+                    </div>
+                </li>
+            }
+        }
+        @{
+
+
+            if (_admin.IndexOf(usuario) >= 0 ||  _ocupaciones.IndexOf(usuario) >= 0 || _ventasVolados.IndexOf(usuario) >= 0 || _directivos.IndexOf(usuario) >= 0)
+            {
+
+                <li class="nav-left-item">
+                    <a class="nav-left-link collapsed" data-toggle="collapse" data-target="#sidebar-nav-volados" aria-expanded="false" aria-controls="profile-menu">Volados <i class="fas fa-chevron-down ml-auto"></i></a>
+                    <div class="nav-left-submenu-dropdown collapse" id="sidebar-nav-volados">
+                                <ul class="nav-left-submenu">
+                                        @if (_admin.IndexOf(usuario) >= 0 || _ventasVolados.IndexOf(usuario) >= 0)
+                                        {
+
+                                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("importar", "volados")">Importar</a></li>
+                                        }
+                                         @if (_admin.IndexOf(usuario) >= 0 || _directivos.IndexOf(usuario) >= 0 || _ocupaciones.IndexOf(usuario) >= 0 || _ventasVolados.IndexOf(usuario) >= 0)
+                                        {
+                                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("resumen", "volados")">Resumen</a></li>
+                                        }
+                                        @if (_admin.IndexOf(usuario) >= 0 || _ventasVolados.IndexOf(usuario) >= 0)
+                                        {
+
+                                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="#!">Mensual</a></li>
+                                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("index", "voladosruta")">Ruta</a></li>
+                                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("index", "voladossegmento")">Segmento</a></li>
+                                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("index", "voladosmeta")">Meta</a></li>
+                                        }
+                                    </ul>
+                    </div>
+                </li>
+            }
+            if (_admin.IndexOf(usuario) >= 0 || _ocupaciones.IndexOf(usuario) >= 0 || _directivos.IndexOf(usuario) >= 0)
+            {
+
+                <li class="nav-left-item">
+                    <a class="nav-left-link collapsed" data-toggle="collapse" data-target="#sidebar-nav-ocupacion" aria-expanded="false" aria-controls="profile-menu">Ocupaciones <i class="fas fa-chevron-down ml-auto"></i></a>
+                    <div class="nav-left-submenu-dropdown collapse" id="sidebar-nav-ocupacion">
+                        <ul class="nav-left-submenu">
+                            @if (_admin.IndexOf(usuario) >= 0 || _ocupaciones.IndexOf(usuario) >= 0)
+                            {
+                                <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("importar", "ocupacion")">Importar</a></li>
+
+                            }
+                            @if (_admin.IndexOf(usuario) >= 0 || _ocupaciones.IndexOf(usuario) >= 0 || _directivos.IndexOf(usuario) >= 0)
+                            {
+                                <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("resumen", "ocupacion")">Resumen</a></li>
+                            }
+                            @if (_admin.IndexOf(usuario) >= 0 || _ocupaciones.IndexOf(usuario) >= 0)
+                            {
+                                <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("index", "ocupacion")">Mensual</a></li>
+                                <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("index", "ocupacionruta")">Ruta</a></li>
+                                <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("index", "ocupacionsegmento")">Segmento</a></li>
+                                <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("index", "ocupacionmeta")">Meta</a></li>
+                            }
+                            </ul>
+                    </div>
+                </li>
+            }
+
+
+            if (_admin.IndexOf(usuario) >= 0 || usuario == "f.arellano@plusultra.com" || _ventasVolados.IndexOf(usuario) >= 0)
+            {
+                <li class="nav-left-item">
+                    <a class="nav-left-link collapsed" data-toggle="collapse" data-target="#sidebar-nav-mantenimiento" aria-expanded="false" aria-controls="profile-menu">Mantenimiento <i class="fas fa-chevron-down ml-auto"></i></a>
+                    <div class="nav-left-submenu-dropdown collapse" id="sidebar-nav-mantenimiento">
+                        <ul class="nav-left-submenu">
+                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("", "emisor")">Emisor</a></li>
+                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("", "tipoemisor")">Canal Venta</a></li>
+                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("", "metaventa")">Meta Venta</a></li>
+                            <li class="nav-left-submenu-item"><a class="nav-left-submenu-link" href="@Url.Action("", "aeronaves")">Aeronave</a></li>
+                        </ul>
+                    </div>
+                </li>
+            }
+
+        }
+
+    </ul>
+</div>

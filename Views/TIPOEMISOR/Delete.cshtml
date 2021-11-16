@@ -1,0 +1,88 @@
+﻿@model Intranet.Models.Data.TIPOEMISOR
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+@{
+    if (ViewBag.Error != null)
+    {
+    <div class="alert alert-danger"> <strong>¡Error! </strong> @ViewBag.Error</div>
+    }
+
+
+
+}
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">ELIMINAR</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="row">
+        <div class="col col-12">
+            <div class="card admin-card">
+                <div class="p-3">
+                    @using (Html.BeginForm())
+                    {
+
+                    <div class="form-horizontal">
+                        <h4>Canal de venta</h4>
+                        <hr>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.IdTipoEmisor)
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-8">
+                                @Html.DisplayFor(model => model.Descripcion)
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DescripcionEquivalente, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-8">
+                                @Html.DisplayFor(model => model.DescripcionEquivalente)
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+            @Html.LabelFor(model => model.Directa, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Directa)
+                    @Html.ValidationMessageFor(model => model.Directa, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>*@
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Directa, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.DisplayFor(model => model.Directa)
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="pt-3">
+                                <button type="submit" class="gn-btn-orange">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <div class="p-3 pt-0">
+                    @Html.ActionLink("←Regresar", "Index")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

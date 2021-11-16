@@ -1,0 +1,45 @@
+@model List<Intranet.Models.Data.VentaCanalDetalle_Result>
+@using System.Globalization;
+
+@if (Model != null && Model.Count() > 0)
+{
+    <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+        <thead>
+            <tr>
+                <th>Emisor</th>
+                <th class="text-center">Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Emisor</td>
+                        <td class="item-data-sm text-right">
+                            @item.Revenue.Value.ToString("N0", CultureInfo.CurrentCulture)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+        <thead>
+            <tr>
+                <th>Emisor</th>
+                <th class="text-center">Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2">
+                    Sin resultados...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

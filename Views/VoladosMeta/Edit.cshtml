@@ -1,0 +1,92 @@
+﻿@model Intranet.Models.Data.VOLADOS_META
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+@{
+    if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger"> <strong>¡Error! </strong> @ViewBag.Error</div>
+    }
+
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">EDITAR</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="card admin-card">
+        <div class="p-3">
+
+
+            @using (Html.BeginForm())
+            {
+
+                <div class="form-horizontal">
+                    <h4>VOLADOS META</h4>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.IdVoladoMeta)
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.VOLADOS_RUTA.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <label class="control-label col-md-2">@Model.VOLADOS_RUTA.Descripcion</label>
+                            @Html.HiddenFor(model => model.IdVoladoRuta)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Año, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <label class="control-label col-md-2">@Model.Año</label>
+                            @Html.HiddenFor(model => model.Año)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Mes, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <label class="control-label col-md-2">@Model.Mes</label>
+                            @Html.HiddenFor(model => model.Mes)
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Meta, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Meta, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Meta, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="pt-3">
+                            <button type="submit" class="gn-btn-orange">Guardar</button>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+        <div class="p-3 pt-0">
+            @Html.ActionLink("←Regresar", "Index")
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+

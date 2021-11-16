@@ -1,0 +1,92 @@
+﻿@model Intranet.Models.Data.EMISOR
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+
+@{
+    if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger"> <strong>¡Error! </strong> @ViewBag.Error</div>
+    }
+
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">NUEVO</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="card admin-card">
+        <div class="p-3">
+
+
+            @using (Html.BeginForm())
+            {
+
+            <div class="form-horizontal">
+                <h4>Emisor</h4>
+                <hr>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @*<div class="form-group">
+            @Html.LabelFor(model => model.IdEmisor, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IdEmisor, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.IdEmisor, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IdTipoEmisor, "Canal", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("IdTipoEmisor", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IdTipoEmisor, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Mostrar, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.Mostrar)
+                            @Html.ValidationMessageFor(model => model.Mostrar, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>*@
+
+
+                <div class="form-group">
+                    <div class="pt-3">
+                        <button type="submit" class="gn-btn-orange">Guardar</button>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        <div class="p-3 pt-0">
+            @Html.ActionLink("←Regresar", "Index")
+        </div>
+    </div>
+</div>
+
+
+
+
+

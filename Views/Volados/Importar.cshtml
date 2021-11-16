@@ -1,0 +1,130 @@
+﻿@model IEnumerable<Intranet.Models.Data.VoladosKiuAdminfile>
+@{
+    ViewBag.Title = "Importar";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+@*<!-- Custom Page Style --> *@
+@section style {
+    <style>
+    </style>
+}
+@{
+    if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger"> <strong>¡Error! </strong> @ViewBag.Error</div>
+    }
+            if (ViewBag.Mensaje != null)
+            {
+<div class="alert alert-success">  @ViewBag.Mensaje</div>
+            }
+
+}
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">IMPORTAR Volados</h1>
+    <span class="gn-orange-line mb-4"></span>
+    <div class="row">
+        <div class="col col-12 col-md-12 col-lg-12">
+            @*@using (Html.BeginForm("importar", "ventas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input type="file" name="postedFile" accept=".csv" required />
+                    <input type="submit" name="btnOption" value="Importar" />
+                    <div>
+                        @ViewBag.Error
+                    </div>
+
+                }*@
+            @*@using (Html.BeginForm("importar", "ventas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                <div class="custom-file mr-md-3">
+                    <input type="file" id="uploadfileventa" class="custom-file-input postedFile" accept=".csv" required>
+                    <label class="custom-file-label" for="uploadfileventa">Seleccionar archivo</label>
+                </div>
+                    <div class="d-inline-block">
+                        <button type="submit" name="btnOption" value="Importar" class="gn-btn gn-btn-blue">Importar</button>
+                    </div>
+                    <div>
+                        @ViewBag.Error
+                    </div>
+                }*@
+
+            @using (Html.BeginForm("importar", "volados", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="custom-file mr-md-3">
+                    <input type="file" id="uploadfileventa" name="postedFile" class="custom-file-input postedFile" accept=".csv" required>
+                    <label class="custom-file-label" for="uploadfileventa">Seleccionar archivo</label>
+                </div>
+                <div class="d-inline-block">
+                    <button type="submit" name="btnOption" value="Importar" class="gn-btn gn-btn-blue">Importar</button>
+                </div>
+
+
+
+            }
+
+        </div>
+
+        <div class="col col-12 mb-4">
+            <br />
+            <div class="card admin-card">
+                <div class="card-header">Archivos procesados:</div>
+                <div>
+                    <div class="p-3 datatable-box">
+                        <table class="table table-bordered table-lg-responsive table-hover table-striped datatable display table-listado" id="tb_listado">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Nombre)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Estado)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Procesado)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Nuevo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Actualizado)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Nombre)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Estado)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Procesado)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Nuevo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Actualizado)
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section script {
+    <script>
+    </script>
+}

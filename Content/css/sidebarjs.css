@@ -1,0 +1,97 @@
+.js-sidebar, .js-sidebar--background {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.js-sidebar--background {
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+/* 
+.js-sidebar--open i {
+  font-size: 28px;
+  color: #002039;
+} */
+
+.js-sidebar {
+  position: fixed;
+  z-index: 9999;
+  -moz-transform: translate(-100%, 0);
+  -ms-transform: translate(-100%, 0);
+  -webkit-transform: translate(-100%, 0);
+  transform: translate(-100%, 0);
+  -moz-transition: -moz-transform 0s ease 0.3s;
+  -o-transition: -o-transform 0s ease 0.3s;
+  -webkit-transition: -webkit-transform 0s ease;
+  -webkit-transition-delay: 0.3s;
+  transition: transform 0s ease 0.3s;
+}
+
+.js-sidebar--background {
+  position: absolute;
+  background: transparent;
+}
+
+.js-sidebar--container {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 300px;
+  height: 100%;
+  background: #FFF;
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  -moz-box-shadow: 2px 0 20px rgba(0, 0, 0, 0.2), 1px 0 10px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 2px 0 20px rgba(0, 0, 0, 0.2), 1px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.2), 1px 0 10px rgba(0, 0, 0, 0.1);
+  -moz-transform: translate(-100%, 0);
+  -ms-transform: translate(-100%, 0);
+  -webkit-transform: translate(-100%, 0);
+  transform: translate(-100%, 0);
+}
+
+.js-sidebar--container .sidebar--title {
+  height: 150px;
+  min-height: 150px;
+  padding: 16px;
+  background: #2196F3;
+  color: white;
+  font-size: 32px;
+  line-height: 100%;
+  display: -webkit-flex;
+  -webkit-align-items: flex-end;
+  display: flex;
+  align-items: flex-end;
+}
+
+.js-sidebar--container .sidebar--menu { overflow: auto; }
+
+.js-sidebar--container .sidebar--menu-link--group {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  display: flex;
+  flex-direction: column;
+}
+
+.js-sidebar--container .sidebar--menu-link { padding: 16px; }
+
+.js-sidebar.is-visible {
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -moz-transition: -moz-transform 0s ease 0s;
+  -o-transition: -o-transform 0s ease 0s;
+  -webkit-transition: -webkit-transform 0s ease;
+  -webkit-transition-delay: 0s;
+  transition: transform 0s ease 0s;
+}
+
+.js-sidebar.is-visible .js-sidebar--background { background: rgba(0, 0, 0, 0.2); }

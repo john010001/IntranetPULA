@@ -1,0 +1,253 @@
+﻿@model AdminRP.Models.Profile.MENU
+
+@{
+    ViewBag.Title = "Asignar";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+
+    //List<AdminRP.Models.Partial.MenuModel> _MenuPrincipal = (List<AdminRP.Models.Partial.MenuModel>)ViewBag.MenuPrincipal;
+    //List<AdminRP.Models.Profile.MENU> _MenuPrincipalUsuario = (List<AdminRP.Models.Profile.MENU>)ViewBag.MenuPrincipalUsuario;
+}
+
+ @*<input type="hidden" id="UrlGetArbol" value='@Url.Action("GetArbol", "Menu")' />*@
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">Asignar Menu</h1>
+    <span class="gn-orange-line mb-4"></span>
+    <link href="~/Content/jsTree/themes/default/style.min.css" rel="stylesheet" />
+    <div class="form-body">
+        @using (Html.BeginForm("Buscar", "Menu", FormMethod.Post, null))
+        {
+            <input type="hidden" id="hddIds" value="@ViewBag.Ids" />
+            <div class="form-group">
+                Rol
+                @*@Html.LabelFor(model => model.codigo_rol, "codigo_rol", htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <div class="col-md-10">
+                    @Html.DropDownList("codigo_rol", null, htmlAttributes: new { @id = "ddlCodigoRol", @class = "form-control"@*, onchange = "GetArbol()"*@ })
+                    @*@Html.ValidationMessageFor(model => model.codigo_rol, "", new { @class = "text-danger" })*@
+                </div>
+            </div>
+
+            <div class="form-group">
+                @*@Html.LabelFor(model => model.codigo_grupo, "codigo_grupo", htmlAttributes: new { @class = "control-label col-md-2" })*@
+                Grupo
+                <div class="col-md-10">
+                    @Html.DropDownList("codigo_grupo", null, htmlAttributes: new { @id = "ddlCodigoGrupo", @class = "form-control"@*, onchange = "GetArbol()"*@ })
+                    @*@Html.ValidationMessageFor(model => model.codigo_grupo, "", new { @class = "text-danger" })*@
+                </div>
+            </div>
+
+            <div class="form-group">
+                @*@Html.LabelFor(model => model.codigo_grupo, "codigo_grupo", htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <div class="text-center pt-2">
+                    @*<form action="Asignar" method="post">*@
+                    <button class="gn-btn-orange" @*id="Buscar"*@ type="submit" name="action">BUSCAR</button>
+                    @*</form>*@
+                </div>
+            </div>
+
+            ///adiciona bottton
+            ///
+            @*<div class="col col-12">
+                    <div class="text-center text-md-left d-md-flex mt-3 pb-2">
+                        <div class="mb-3 mb-md-0 mr-md-4">
+                            <button class="gn-btn-line-orange" id="Limpia" name="Boton" value="Limpia">Limpiar</button>
+                        </div>
+                        <div>
+                            <button class="gn-btn-orange" id="Buscar" name="Boton" value="Buscar">Buscar</button>
+                        </div>
+                    </div>
+                </div>*@
+
+
+
+        }
+
+    <div id="jstreeMenu">
+        @{
+            AdminRP.Models.Profile.MENU mENU = new AdminRP.Models.Profile.MENU();
+
+            List<AdminRP.Models.Partial.MenuModel> _MenuPrincipal = (List<AdminRP.Models.Partial.MenuModel>)ViewBag.MenuPrincipal;
+            //se agrego esta linea
+            //List<AdminRP.Models.Profile.MENU> _MenuPrincipal = (List<AdminRP.Models.Profile.MENU>)ViewBag.MenuPrincipal;
+
+
+            List<AdminRP.Models.Profile.MENU> _MenuPrincipalUsuario = (List<AdminRP.Models.Profile.MENU>)ViewBag.MenuPrincipalUsuario;
+
+            bool swPrincipalUsuario = false;
+            bool swSecundarioUsuario = false;
+            <ul class="nav-left">
+                @foreach (var itemMenu in _MenuPrincipal)
+                {
+                    swPrincipalUsuario = false;
+                    swSecundarioUsuario = false;
+                    swPrincipalUsuario = _MenuPrincipalUsuario.Where(w => w.Id_Menu == itemMenu.Menu.Id_Menu).Count() > 0 ? true : false;
+
+                    <li id="@itemMenu.Menu.Id_Menu-0">
+                        @*<li id="@itemMenu.Id_Menu-0" class="nav-left-item">*@
+                        @{
+                            <a class="nav-left-link collapsed" data-toggle="collapse"
+                               @*data-target="#sidebar-nav-@itemMenu.descripcion_menu.ToString().Replace(" ", String.Empty)"*@ aria-expanded="false" aria-controls="profile-menu">
+                                @itemMenu.Menu.descripcion_menu
+                                @if (itemMenu.SubMenus.Count() > 0)
+                                {
+
+                                    <i class="fas fa-chevron-down ml-auto"
+                                       data-jstree='{"icon":"fas fa-chevron-down","opened":true,"selected":@itemMenu.Checked}'>
+                                    </i>
+                                    @*data-jstree='{"icon":"fas fa-chevron-down","selected":true}'></i>*@
+
+                                }
+                            </a>
+                            if (itemMenu.SubMenus.Count() > 0)
+                            {
+
+
+                                <ul class="nav-left-submenu">
+                                    @foreach (var itemSubMenu in itemMenu.SubMenus)
+                                    {
+                                        swSecundarioUsuario = false;
+
+
+                                        @*<li id="@itemSubMenu.Id_Menu"><a class="nav-left-submenu-link" href="@itemSubMenu.url_menu">@itemSubMenu.descripcion_menu</a></li>*@
+                                        <li id="@itemSubMenu.Menu.Id_Menu-@itemMenu.Menu.Id_Menu" aria-selected="true" data-jstree='{"icon":"glyphicon glyphicon-leaf","opened":true,"selected":@itemSubMenu.Checked}'>@itemSubMenu.Menu.descripcion_menu</li>
+                                    }
+                                </ul>
+
+                            }
+
+                        }
+
+                    </li>
+                }
+
+
+            </ul>
+        }
+
+        @*@{Html.RenderPartial("parcial/_MenuOpciones", null, new ViewDataDictionary {  { "MenuPrincipal", _MenuPrincipal },{ "MenuPrincipalUsuario", _MenuPrincipalUsuario } });}*@
+    </div>
+
+
+
+        <div class="form-group">
+            <div class="pt-3">
+                <form action="AsignarMenu" method="post">
+                    <input type="hidden" name="codigoRol" id="hddCodigoRol" />
+                    <input type="hidden" name="codigoGrupo" id="hddCodigoGrupo" />
+                    <button type="submit" class="gn-btn-orange">GUARDAR</button>
+                    <input type="text" id="menucheck" name="menucheck" />
+                </form>
+            </div>
+        </div>
+
+        <div class="p-3 pt-0">
+            @Html.ActionLink("←Regresar", "Index")
+        </div>
+
+
+    </div>
+
+    @section script{
+        <!-- 4 include the jQuery library -->
+        @*<script src="dist/libs/jquery.js"></script>*@
+
+
+        <!-- 5 include the minified jstree source -->
+        <script src="~/Scripts/jsTree3/jstree.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+        @*<script src="dist/jstree.min.js"></script>*@
+        <script>
+
+
+            //function GetArbol(obj) {
+            //    var url = $("#UrlGetArbol").val();
+            //    var parametros = {
+            //        idgrupo: $("#ddlCodigoGrupo").val(),
+            //        idrol: $("#ddlCodigoRol").val()
+            //    };
+            //    $.post(url, parametros).done(
+            //        function (data) {
+            //            $("#jstreeMenu").html(data);
+            //        }
+            //    ).fail(function (xhr, status, error) {
+            //    }).always(
+            //        function () {
+            //        }
+            //    );
+            //}
+
+
+
+
+
+
+            $(function () {
+                // 6 create an instance when the DOM is ready
+                console.log($('#hddIds').val());
+                var ids = $('#hddIds').val();
+                $('#jstree').jstree();
+                $('#jstreeMenu').jstree({
+                    "checkbox": {
+                        "keep_selected_style": false
+                    },
+                    "plugins": ["checkbox", "changed", "types"]
+                });
+                // 7 bind to events triggered on the tree
+                $('#jstree').on("changed.jstree", function (e, data) {
+                    console.log(data.selected);
+
+                    $('#menucheck').val(data.selected);
+                });
+                $('#jstreeMenu').on("changed.jstree", function (e, data) {
+                    console.log(data.selected);
+
+                    $('#menucheck').val(data.selected);
+                });
+
+                // 8 interact with the tree - either way is OK
+                $('button').on('click', function () {
+                    //$('#jstree').jstree(true).select_node('j1_1');
+
+                    //$('#jstree').jstree('select_node', 'j1_1');
+                    //$.jstree.reference('#jstree').select_node('j1_1');
+
+                });
+
+                if (ids !== null && ids !== undefined && ids.length > 0) {
+                    console.log('Tiene valores');
+                    var list = ids.split('&');
+                    for (let i = 0; i < list.length; i++) {
+                        console.log(list[i]);
+                        $('#jstreeMenu').jstree('select_node', list[i]);
+                    }
+                }
+
+                $('#hddCodigoRol').val($('#ddlCodigoRol').val());
+                $('#hddCodigoGrupo').val($('#ddlCodigoGrupo').val());
+
+                $('#ddlCodigoRol').on('change', function () {
+                    $('#hddCodigoRol').val($(this).val());
+                });
+
+                $('#ddlCodigoGrupo').on('change', function () {
+                    $('#hddCodigoGrupo').val($(this).val());
+                });
+
+
+            });
+        </script>
+
+        @*@if (ViewBag.ListaIdMenu != null)
+            {
+                foreach (var item in ViewBag.ListaIdMenu)
+                {
+              <script>
+                       $('#jstreeMenu').jstree('select_node','@item');
+              </script>
+
+                }
+            }*@
+
+    }
+</div>

@@ -1,0 +1,159 @@
+﻿@model IEnumerable<Intranet.Models.Data.EMISOR>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+
+@* <!-- Page Style --> *@
+@section style {
+    <!-- Data Table 1.10.22 -->
+    <link rel="stylesheet" href="~/content/plugins/datatable/datatables.min.css">
+
+    <style>
+       .table-listado tbody tr th a {
+            font-size: 14px;
+            font-weight: 400;
+            text-decoration: underline;
+        }
+
+            .table-listado tbody tr th a:hover {
+                color: #FF7800;
+            }
+
+        .table-listado tbody tr td a i {
+            font-size: 16px;
+        }
+
+            .table-listado tbody tr td a i.fa-edit {
+                color: #00cd00;
+            }
+
+            .table-listado tbody tr td a i.fa-minus-circle {
+                color: #FF0000;
+            }
+
+            .table-listado tbody tr td a i:hover {
+                color: #FF7800;
+            }
+    </style>
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">EMISOR</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="row">
+        <div class="col col-12 col-md-6 col-lg-3">
+            <div class="mb-4">
+                <a href='@Url.Action("Create", "Emisor")' class="gn-btn-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="gn-btn-text">Nuevo</div>
+                        <i class="fal fa-plus-circle"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col col-12 mb-4">
+            <div class="card admin-card">
+
+                <div>
+                    <div class="p-3 datatable-box">
+                        <table class="table table-bordered table-lg-responsive table-hover table-striped datatable display table-listado" id="tb_listado">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Descripcion)
+                                    </th>
+                                    @*<th>
+                                        @Html.DisplayNameFor(model => model.Mostrar)
+                                    </th>*@
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.TIPOEMISOR.Descripcion)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Descripcion)
+                                        </td>
+                                        @*<td>
+                                            @Html.DisplayFor(modelItem => item.Mostrar)
+                                        </td>*@
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.TIPOEMISOR.Descripcion)
+                                        </td>
+                                        <td>
+                                            <a href='@Url.Action("Edit", "Emisor", new { id = item.IdEmisor })'>
+                                                <i class='far fa-edit'></i>
+                                            </a>
+                                            <a href='@Url.Action("Delete", "Emisor", new { id = item.IdEmisor })'>
+                                                <i class='far fa-minus-circle'></i>
+                                            </a>
+
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section script {
+
+    <!-- Data Table 1.10.22 -->
+    <script src="~/content/plugins/datatable/datatables.min.js"></script>
+
+    <script>
+        // Sidenav active link
+        document.addEventListener('DOMContentLoaded', function() {
+            sidenavLink("7.2");
+        });
+
+        // Data Table
+        $("#tb_listado").dataTable(
+            {
+                language: {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": '<i class="far fa-angle-right"></i>',
+                        "previous": '<i class="far fa-angle-left"></i>'
+                    }
+                }
+            }
+        );
+    </script>
+}
+

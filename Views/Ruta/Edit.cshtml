@@ -1,0 +1,67 @@
+﻿@model Intranet.Models.Data.RUTA
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">EDITAR</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="card admin-card">
+        <div class="p-3">
+
+
+            @using (Html.BeginForm())
+            {
+
+            <div class="form-horizontal">
+                <h4>RUTA</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.IdRuta)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CodigoRuta, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.CodigoRuta, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CodigoRuta, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DescripcionRuta, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DescripcionRuta, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DescripcionRuta, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+
+                @*<div class="form-group">
+            @Html.LabelFor(model => model.Mostrar, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Mostrar)
+                    @Html.ValidationMessageFor(model => model.Mostrar, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>*@
+
+                <div class="form-group">
+                    <div class="pt-3">
+                        <button type="submit" class="gn-btn-orange">Guardar</button>
+                    </div>
+                </div>
+
+            </div>
+            }
+        </div>
+        <div class="p-3 pt-0">
+            @Html.ActionLink("←Regresar", "Index")
+        </div>
+    </div>
+</div>
+

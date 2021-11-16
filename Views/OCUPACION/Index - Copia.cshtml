@@ -1,0 +1,434 @@
+﻿@model Intranet.ModelsApp.OcupacionVuelosRegulares
+@using System.Globalization;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">OCUPACIÓN VUELOS REGULARES</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="row">
+
+        <div class="col col-12 mb-4">
+            <div>
+                @using (Html.BeginForm())
+                {
+                    <div class="d-md-flex totalyearmounth">
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+
+                            <label for="ResumeByMonth"> Origen:</label>
+                            <select name="origen" id="origen" required class="form-control">
+                                <option value=""></option>
+                                <option value="CCS">Caracas</option>
+                                <option value="GYE">Guayaquil</option>
+                                <option value="LIM">Lima</option>
+                                <option value="MAD">Madrid</option>
+                                <option value="TFN">Tenerife</option>
+                                <option value="UIO">Quito</option>
+                            </select>
+                        </div>
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+                            <label for="ResumeByYear">Destino:</label>
+                            <select name="destino" id="destino" required class="form-control">
+                                <option value=""></option>
+                                <option value="CCS">Caracas</option>
+                                <option value="GYE">Guayaquil</option>
+                                <option value="LIM">Lima</option>
+                                <option value="MAD">Madrid</option>
+                                <option value="TFN">Tenerife</option>
+                                <option value="UIO">Quito</option>
+                            </select>
+                        </div>
+
+
+                        @*<div class="form-group  mr-sm-3">
+                            <br /> /
+
+                        </div>
+
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+
+                            <label for="ResumeByMonth"> Mes:</label>
+                            @Html.DropDownList("Month", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+                            <label for="ResumeByYear">Año:</label>
+                            @Html.DropDownList("Year", null, htmlAttributes: new { @class = "form-control" })
+                        </div>*@
+                        <div class="form-group d-sm-inline-block">
+                            <div class="h-100 d-flex align-items-end text-center">
+                                <button class="gn-btn-line-orange btn-icon mx-auto">Mostrar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">Vuelos regulares por mes</div>
+                <div class="py-3 px-2">
+                    @*<table class="table table-bordered table-responsive table-admin-full m-0 tb-datatable-only-buttons">*@
+                    @if (Model != null)
+                    {
+
+                        <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                            <thead>
+                                <tr>
+                                    @{
+                                        string fechaCadena = Model.FechaCarga.ToString("dd MMMM yy", CultureInfo.CurrentCulture);
+
+                                    }
+
+                                    <th class="text-center align-middle ">
+                                        @Model.Origen - @Model.Destino
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Asientos ofertados
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Asientos reservados
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Asientos disponibles
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        LF al  @Model.FechaCarga.ToString("ddMMMyy", DateTimeFormatInfo.InvariantInfo)
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Asientos reservados al <br /> @Model.FechaCargaAnterior.ToString("ddMMMyy", DateTimeFormatInfo.InvariantInfo)
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Diferencia con el  <br />@Model.FechaCargaAnterior.ToString("ddMMMyy", DateTimeFormatInfo.InvariantInfo)
+                                    </th>
+                                </tr>
+                            </thead>
+
+
+                            @foreach (var item in Model.Ocupacion)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MesCadena)
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Html.DisplayFor(modelItem => item.Ofertados)
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Html.DisplayFor(modelItem => item.Reservados)
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Html.DisplayFor(modelItem => item.Disponibles)
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Html.DisplayFor(modelItem => item.LoadFactor)%
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Html.DisplayFor(modelItem => item.ReservadosAnterior)
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Html.DisplayFor(modelItem => item.Diferencia)
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </table>
+                    }
+
+                </div>
+            </article>
+        </div>
+
+        <div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                @*<div class="card-header">Vuelos regulares por mes</div>*@
+                <div class="py-3 px-2">
+                    @*<table class="table table-bordered table-responsive table-admin-full m-0 tb-datatable-only-buttons">*@
+                    @if (Model != null)
+                    {
+
+                        double _totalPax = 0;
+                        double _ofertado = 0;
+                        double _lf = 0;
+                        <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                            <thead>
+                                <tr>
+
+
+                                    <th class="text-center">@Model.Origen - @Model.Destino</th>
+                                    <th class="text-center align-middle ">
+                                        C
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Y
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Total Pax
+                                    </th>
+
+                                    <th class="text-center align-middle ">
+                                        Ofertado
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        LF
+                                    </th>
+                                    <th class="text-center align-middle ">
+
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        C
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Y
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Total Pax
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        Ofertado
+                                    </th>
+                                    <th class="text-center align-middle ">
+                                        LF
+                                    </th>
+                                </tr>
+                            </thead>
+                            @{ 
+                                List<DateTime> fechas = Model.OcupacionDiariaActual.Select(s => s.Fecha).ToList();
+                                fechas.AddRange(Model.OcupacionDiariaAnterior.Select(s => s.Fecha).ToList());
+
+                            }
+
+                            @foreach (var item in fechas.OrderBy(o => o.Date).Distinct())
+                            {
+                        <tr>
+                            <td class="text-center">
+                                @item.ToString("dd/MM/yyyy", CultureInfo.CurrentCulture)
+
+                            </td>
+                            @{
+                                if (Model.OcupacionDiariaActual.Where(w => w.Fecha == item).ToList().Count != 0)
+                                {
+                                    <td class="item-data-sm text-right">
+                                        @Model.OcupacionDiariaActual.Where(w => w.Fecha == item).Select(s => s.CabinaC).FirstOrDefault()
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Model.OcupacionDiariaActual.Where(w => w.Fecha == item).Select(s => s.CabinaY).FirstOrDefault()
+                                    </td>
+
+                                    _totalPax = Model.OcupacionDiariaActual.Where(w => w.Fecha == item).Select(s => s.TotalPax).FirstOrDefault();
+                                    _ofertado = Model.OcupacionDiariaActual.Where(w => w.Fecha == item).Select(s => s.Ofertado).FirstOrDefault();
+                                    _lf = 0;
+                                    if (_totalPax > 0)
+                                    {
+                                        _lf = (_totalPax / _ofertado) * 100;
+                                    }
+                                    else
+                                    {
+                                        _lf = 0;
+                                    }
+
+
+
+
+
+                                    <td class="item-data-sm text-right">
+                                        @_totalPax
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @_ofertado
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @_lf.ToString("N0")%
+
+                                    </td>
+
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                }
+
+
+                            }
+
+
+                            <td></td>
+                            @{
+                                if (Model.OcupacionDiariaAnterior.Where(w => w.Fecha == item).ToList().Count != 0)
+                                {
+                                    <td class="item-data-sm text-right">
+                                        @Model.OcupacionDiariaAnterior.Where(w => w.Fecha == item).Select(s => s.CabinaC).FirstOrDefault()
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @Model.OcupacionDiariaAnterior.Where(w => w.Fecha == item).Select(s => s.CabinaY).FirstOrDefault()
+                                    </td>
+
+                                    _totalPax = Model.OcupacionDiariaAnterior.Where(w => w.Fecha == item).Select(s => s.TotalPax).FirstOrDefault();
+                                    _ofertado = Model.OcupacionDiariaAnterior.Where(w => w.Fecha == item).Select(s => s.Ofertado).FirstOrDefault();
+                                    _lf = 0;
+                                    if (_totalPax > 0)
+                                    {
+                                        _lf = (_totalPax / _ofertado) * 100;
+                                    }
+                                    else
+                                    {
+                                        _lf = 0;
+                                    }
+
+
+
+                                    <td class="item-data-sm text-right">
+                                        @_totalPax
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @_ofertado
+                                    </td>
+                                    <td class="item-data-sm text-right">
+                                        @_lf.ToString("N0")%
+
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                }
+                            }
+
+
+                        </tr>
+                                }
+
+                        </table>
+                    }
+
+                </div>
+            </article>
+        </div>
+
+
+
+        <div class="col col-12 col-md-6 col-lg-6 mb-4">
+            <article class="card admin-card h-100">
+                @*<div class="card-header">@Model.FechaCarga</div>*@
+                <div class="py-3 px-2">
+                    <div class="px-3 d-flex align-items-center mb-4">
+                        @if (Model != null)
+                        {
+                            <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                                <thead>
+                                    <tr>
+                                        <th>@Model.Origen - @Model.Destino</th>
+                                        <th class="text-center">C</th>
+                                        <th class="text-center">Y</th>
+                                        <th class="text-center">Total PAX</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var item in Model.OcupacionDiariaActual)
+                                        {
+
+                                            <tr>
+                                                <td>@item.Fecha.ToString("dd/MM/yyyy", CultureInfo.CurrentCulture)</td>
+                                                <td class="item-data-sm text-right">
+                                                    @item.CabinaC
+
+                                                </td>
+                                                <td class="item-data-sm text-right">
+                                                    @item.CabinaY
+                                                </td>
+                                                <td class="item-data-sm text-right">
+                                                    @item.TotalPax
+                                                </td>
+                                            </tr>
+
+                                        }
+
+
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </article>
+        </div>
+
+
+        <div class="col col-12 col-md-6 col-lg-6 mb-4">
+            <article class="card admin-card h-100">
+                @*<div class="card-header">@Model.FechaCargaAnterior</div>*@
+                <div class="py-3 px-2">
+                    <div class="px-3 d-flex align-items-center mb-4">
+                        @if (Model != null)
+                        {
+
+                            <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                                <thead>
+                                    <tr>
+                                        <th>@Model.Origen - @Model.Destino</th>
+                                        <th class="text-center">C</th>
+                                        <th class="text-center">Y</th>
+                                        <th class="text-center">Total PAX</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var item in Model.OcupacionDiariaAnterior)
+                                        {
+
+                                            <tr>
+                                                <td>@item.Fecha.ToString("dd/MM/yyyy", CultureInfo.CurrentCulture)</td>
+                                                <td class="item-data-sm text-right">
+                                                    @item.CabinaC
+
+                                                </td>
+                                                <td class="item-data-sm text-right">
+                                                    @item.CabinaY
+                                                </td>
+                                                <td class="item-data-sm text-right">
+                                                    @item.TotalPax
+                                                </td>
+                                            </tr>
+
+                                        }
+
+
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </article>
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+

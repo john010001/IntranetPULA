@@ -1,0 +1,178 @@
+﻿@model  Intranet.ModelsApp.ResumenVolados
+@using System.Globalization;
+@{
+    ViewBag.Title = "Resumen";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+@*
+    <!-- Custom Plugin Style --> *@
+@section pluginStyle {
+    <!-- Chart.js -->
+    <link rel="stylesheet" href="~/content/css/chart.css">
+    <script src="~/content/js/chart.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js"></script> -->
+    <!-- Chartjs plugin Datalabels -->
+    <script src="~/content/js/chartjs-plugin-datalabels.js"></script>
+
+    <script>
+        // Init the chartjs-plugin-datalabel
+        Chart.plugins.register(ChartDataLabels);
+
+        //Configuracion Global ChartJS
+        Chart.defaults.global.defaultFontFamily = "'Montserrat', 'Helvetica', sans-serif";
+        Chart.defaults.global.tooltips.backgroundColor = 'rgba(0,32,57,0.75)';
+        Chart.defaults.global.tooltips.titleFontStyle = "normal";
+    </script>
+}
+
+@*
+    <!-- Custom Page Style --> *@
+@section style {
+    <style>
+    </style>
+}
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">RESUMEN DE VOLADO</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    @using (Html.BeginForm())
+    {
+        <div class="d-md-flex totalyearmounth">
+            <div class="form-group d-sm-inline-block mr-sm-3">
+
+                <label for="ResumeByMonth"> Mes:</label>
+                @Html.DropDownList("Month", null, htmlAttributes: new { @class = "form-control", @id = "ddlMonth" })
+            </div>
+            <div class="form-group d-sm-inline-block mr-sm-3">
+                <label for="ResumeByYear">Año:</label>
+                @Html.DropDownList("Year", null, htmlAttributes: new { @class = "form-control", @id = "ddlYear" })
+            </div>
+
+            <div class="form-group d-sm-inline-block">
+                <div class="h-100 d-flex align-items-end text-center">
+                    <button class="gn-btn-line-orange btn-icon mx-auto">Mostrar</button>
+                </div>
+            </div>
+        </div>
+    }
+    <p style="text-align: left;font-size: small;font-weight: 500;">
+
+        @{
+            if (Model.FechaUltimaVolados != null)
+            {
+                <text>REPORTE DE VOLADO HASTA EL DIA</text> @Model.FechaUltimaVolados.GetValueOrDefault().ToString("d", CultureInfo.CurrentCulture)
+            }
+            else
+            {
+                <text>NO HAY VOLADO GENERADO ESTE MES</text>
+            }
+
+
+
+        }
+
+    </p>
+
+    @{
+
+        <div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                @*<div class="card-header">@itemRutas </div>*@
+                <div class="py-3 px-2">
+                    <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                        <thead>
+                            <tr>
+
+                                <th>Origen-Destino</th>
+                                <th class="text-center">Frecuencia</th>
+                                <th class="text-center">Asientos ofrecidos</th>
+                                <th class="text-center">Pasajeros revenue</th>
+                                <th class="text-center">Revenue + YQ </th>
+                                <th class="text-center">Tarifa Promedio</th>
+                                <th class="text-center">LF</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                Decimal _totalAsientosOfrecidos = 0;
+                                Decimal _totalPaxRevenue = 0;
+                                Decimal _totalYQ = 0;
+                                Decimal _totalAVG = 0;
+                                Decimal _totalLF = 0;
+
+                            }
+
+
+                            @foreach (var itemRutas in Model.Rutas)
+                            {
+                                <tr>
+                                    <td class="item-data-sm text-left">@itemRutas</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                    <td></td>
+                                </tr>
+
+                                foreach (var item in Model.DetalleRutas.Where(w => w.DescripcionRuta == itemRutas))
+                                {
+                                    <tr>
+                                        @*<td class=" text-center">@item.DescripcionRuta</td>*@
+                                        <td class=" text-center">@item.Origen - @item.Destino</td>
+                                        <td class=" text-center">@item.Frecuencia.ToString("N0")</td>
+                                        <td class="text-right">@item.AsientosOfrecidos.ToString("N0")</td>
+                                        <td class="text-right">@item.PasajerosRevenue.ToString("N0")</td>
+                                        <td class=" text-right">@item.YQ.ToString("N2")</td>
+                                        <td class=" text-right">@item.AVG.ToString("N2")</td>
+                                        <td class="text-right">@item.LF.ToString("N0")%</td>
+
+
+                                    </tr>
+
+
+                                }
+                                <tr>
+                                    <td class="item-data-sm">Total</td>
+                                    <td></td>
+
+                                    @{
+                                        _totalPaxRevenue = Model.DetalleRutas.Where(w => w.DescripcionRuta == itemRutas).Sum(s => s.PasajerosRevenue);
+                                        _totalAsientosOfrecidos = Model.DetalleRutas.Where(w => w.DescripcionRuta == itemRutas).Sum(s => s.AsientosOfrecidos);
+                                        _totalYQ = @Model.DetalleRutas.Where(w => w.DescripcionRuta == itemRutas).Sum(s => s.YQ);
+                                        _totalAVG = _totalYQ / Model.DetalleRutas.Where(w => w.DescripcionRuta == itemRutas).Sum(s => s.PasajerosRevenue);
+                                        _totalLF = (_totalPaxRevenue * 100) / _totalAsientosOfrecidos;
+                                    }
+                                    <td class="item-data-sm text-right">@_totalAsientosOfrecidos.ToString("N0")</td>
+                                    <td class="item-data-sm text-right">@_totalPaxRevenue.ToString("N0")</td>
+
+
+                                    <td class="item-data-sm text-right">@_totalYQ.ToString("N2")</td>
+                                    <td class="item-data-sm text-right">@_totalAVG.ToString("N2")</td>
+                                    <td class="item-data-sm text-right">@_totalLF.ToString("N0")%</td>
+                                </tr>
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+
+
+
+
+
+
+
+    }
+
+
+
+
+</div>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7a0bd41330b049a48590bc5d20271995" Name="Ventas">
+        <EntityTypeShape EntityType="IntranetModel.EMISOR" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntranetModel.TIPOEMISOR" Width="1.5" PointX="5.625" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="IntranetModel.VentasKiuAdminFile" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <AssociationConnector Association="IntranetModel.FK_EMISOR_TIPOEMISOR" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="IntranetModel.META_VENTA" Width="1.5" PointX="7.875" PointY="0.75" />
+        <AssociationConnector Association="IntranetModel.FK_META_VENTA_TIPOEMISOR" />
+        <EntityTypeShape EntityType="IntranetModel.TMPVentasKiuAdmin" Width="1.5" PointX="0.875" PointY="3.375" />
+        <EntityTypeShape EntityType="IntranetModel.VentasKiuAdmin" Width="1.5" PointX="2.875" PointY="3.875" />
+        <EntityTypeShape EntityType="IntranetModel.RUTA" Width="1.5" PointX="7.375" PointY="3.875" />
+        <EntityTypeShape EntityType="IntranetModel.RUTA_MERCADO" Width="1.5" PointX="9.625" PointY="3.875" />
+        <AssociationConnector Association="IntranetModel.FK_RUTA_MERCADO_RUTA" />
+      </Diagram>
+      <Diagram DiagramId="c977b6947ccc42fb9dd8bb0f1cfefd65" Name="Ocupacion" ZoomLevel="98" >
+        <EntityTypeShape EntityType="IntranetModel.OCUPACION_ARCHIVO" Width="1.5" PointX="1.75" PointY="1" />
+        <EntityTypeShape EntityType="IntranetModel.OCUPACION" Width="1.5" PointX="1.75" PointY="4.25" />
+        <AssociationConnector Association="IntranetModel.FK_OCUPACION_OCUPACION_ARCHIVO" />
+        <EntityTypeShape EntityType="IntranetModel.OCUPACION_RUTA" Width="1.5" PointX="4.5" PointY="1.875" />
+        <EntityTypeShape EntityType="IntranetModel.OCUPACION_SEGMENTO" Width="1.5" PointX="7" PointY="4.5" />
+        <AssociationConnector Association="IntranetModel.FK_OCUPACION_SEGMENTO_OCUPACION_RUTA" />
+        <EntityTypeShape EntityType="IntranetModel.OCUPACION_META" Width="1.5" PointX="6.75" PointY="0.75" />
+        <AssociationConnector Association="IntranetModel.FK_OCUPACION_META_OCUPACION_RUTA" />
+      </Diagram>
+      <Diagram DiagramId="9f4daaf49adc4f5fbd231190faa72d5c" Name="Volados" ZoomLevel="72" >
+        <EntityTypeShape EntityType="IntranetModel.VoladosKiuAdminfile" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="IntranetModel.AERONAVES" Width="1.5" PointX="6.125" PointY="4.75" />
+        <EntityTypeShape EntityType="IntranetModel.VOLADOS" Width="1.5" PointX="8.375" PointY="1.25" />
+        <AssociationConnector Association="IntranetModel.FK_VOLADOS_AERONAVES" />
+        <EntityTypeShape EntityType="IntranetModel.VOLADOS_META" Width="1.5" PointX="3" PointY="8" />
+        <EntityTypeShape EntityType="IntranetModel.VOLADOS_RUTA" Width="1.5" PointX="0.75" PointY="6.625" />
+        <EntityTypeShape EntityType="IntranetModel.VOLADOS_SEGMENTO" Width="1.5" PointX="3" PointY="5.125" />
+        <AssociationConnector Association="IntranetModel.FK_VOLADPS_META_VOLADOS_RUTA" />
+        <AssociationConnector Association="IntranetModel.FK_VOLADOS_SEGMENTO_VOLADOS_RUTA" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,844 @@
+﻿
+@model Intranet.ModelsApp.ResumenCanalDocumento
+@using System.Globalization;
+@{
+    ViewBag.Title = "Resumen Documento";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+
+
+
+@section pluginStyle {
+    <!-- Chart.js -->
+    <link rel="stylesheet" href="~/content/css/chart.css">
+    <script src="~/content/js/chart.min.js"></script>
+    <script src="~/content/js/chartjs-plugin-datalabels.js"></script>
+
+    <script>
+        // Init the chartjs-plugin-datalabel
+        Chart.plugins.register(ChartDataLabels);
+
+        //Configuracion Global ChartJS
+        Chart.defaults.global.defaultFontFamily = "'Montserrat', 'Helvetica', sans-serif";
+        Chart.defaults.global.tooltips.backgroundColor = 'rgba(0,32,57,0.75)';
+        Chart.defaults.global.tooltips.titleFontStyle = "normal";
+    </script>
+}
+
+@*
+    <!-- Custom Page Style --> *@
+@section style {
+    <style>
+    </style>
+}
+
+
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">RESUMEN DE VENTA POR TIPO DE DOCUMENTO</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="row">
+
+        <div class="col col-12 mb-4">
+            <div>
+                @using (Html.BeginForm())
+                {
+                    <div class="d-md-flex totalyearmounth">
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+
+                            <label for="ResumeByMonth"> Mes:</label>
+                            @Html.DropDownList("Month", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+                            <label for="ResumeByYear">Año:</label>
+                            @Html.DropDownList("Year", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group d-sm-inline-block">
+                            <div class="h-100 d-flex align-items-end text-center">
+                                <button class="gn-btn-line-orange btn-icon mx-auto">Mostrar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @{
+            decimal totalRevenue;
+            double totalCupones;
+            double totalTransacc;
+            decimal totalCanalRevenue;
+            double totalCanalcupones;
+            double totalCanalTransacc;
+            decimal porcRevenue;
+            decimal porcTax;
+            decimal tarifaMedia;
+
+
+        }
+
+
+        <div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">TKTT</div>
+                <div class="py-3 px-2">
+
+
+                    <table class="table table-bordered table-responsive table-admin-full m-0 ">
+                        @*<table class="table table-bordered table-responsive table-admin-full m-0 tb-datatable-only-buttons">*@
+                        <thead>
+
+                            <tr>
+                                <th></th>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <th colspan="2" class="text-center">@item.ToString("dd/MM/yyyy")</th>
+
+                                }
+                                <th colspan="3" class="text-center">Acumulado del mes</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td></td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                    <td class="text-center">Nº&nbsp;CUPONES</td>
+                                }
+                                <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                <td class="text-center">Nº&nbsp;CUPONES</td>
+                                <td class="text-center">TARIFA&nbsp;MEDIA&nbsp;POR&nbsp;CUPON</td>
+
+                            </tr>
+                            @{
+                                var listaCanalesDetalle = Model.Venta_TKT.GroupBy(g => new { g.Canal })
+                                            .Select(s => new
+                                            {
+                                                Canal = s.Key.Canal
+                                            }).ToList();
+
+                                totalRevenue = Model.Venta_TKT.Sum(s => s.Revenue_YQ);
+                                totalCupones = Model.Venta_TKT.Sum(s => s.Cupones);
+                                totalTransacc = Model.Venta_TKT.Sum(s => s.Transacciones);
+                                totalCanalRevenue = 0;
+                                totalCanalcupones = 0;
+                                totalCanalTransacc = 0;
+                                porcRevenue = 0;
+                                porcTax = 0;
+
+                            }
+
+
+                            @foreach (var itemVenta in listaCanalesDetalle)
+                            {
+                                <tr>
+                                    <td>@itemVenta.Canal</td>
+                                    @foreach (var item in Model.Fecha)
+                                    {
+                                        var detalleDia = Model.Venta_TKT.Where(w => w.Canal == itemVenta.Canal && w.Fecha == item).FirstOrDefault();
+
+
+                                        if (detalleDia != null)
+                                        {
+                                            <td class="text-right">@detalleDia.Revenue_YQ.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                            <td class="text-right">@detalleDia.Cupones.ToString("N0", CultureInfo.CurrentCulture)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-right"></td>
+                                            <td class="text-right"></td>
+                                        }
+
+                                    }
+
+                                    @{
+                                        totalCanalRevenue = Model.Venta_TKT.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Revenue_YQ);
+                                        totalCanalcupones = Model.Venta_TKT.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Cupones);
+
+
+                                        try
+                                        {
+                                            tarifaMedia = totalCanalRevenue / (decimal)totalCanalcupones;
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                            tarifaMedia = 0;
+                                        }
+                                    }
+
+                                    <td class="text-right">@totalCanalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+
+                                    <td class="text-right">@totalCanalcupones.ToString("N0", CultureInfo.CurrentCulture)</td>
+                                    <td class="text-right">@tarifaMedia.ToString("N2", CultureInfo.CurrentCulture)</td>
+
+
+                                </tr>
+                            }
+                            <tr>
+                                <td style="font-weight:500;">Total</td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    if (Model.Venta_TKT.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_TKT.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ).ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+                                    if (Model.Venta_TKT.Where(w => w.Fecha == item).Sum(s => s.Cupones) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_TKT.Where(w => w.Fecha == item).Sum(s => s.Cupones).ToString("N0", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+
+                                }
+                                @{
+                                    try
+                                    {
+                                        tarifaMedia = totalRevenue / (decimal)totalCupones;
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                        tarifaMedia = 0;
+                                    }
+
+                                }
+
+                                <td style="font-weight:500" class="text-right">@totalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">@totalCupones.ToString("N0", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">@tarifaMedia.ToString("N2", CultureInfo.CurrentCulture)</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </article>
+        </div>
+
+
+        <div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">EMDA, EXCH</div>
+                <div class="py-3 px-2">
+
+
+                    <table class="table table-bordered table-responsive table-admin-full m-0 ">
+                        @*<table class="table table-bordered table-responsive table-admin-full m-0 tb-datatable-only-buttons">*@
+                        <thead>
+
+                            <tr>
+                                <th></th>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <th colspan="2" class="text-center">@item.ToString("dd/MM/yyyy")</th>
+
+                                }
+                                <th colspan="3" class="text-center">Acumulado del mes</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td></td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                    <td class="text-center">TRANSAC.</td>
+                                }
+                                <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                <td class="text-center">TRANSAC.</td>
+                                <td class="text-center">INGRESO&nbsp;MEDIO</td>
+
+                            </tr>
+                            @{
+                                listaCanalesDetalle = Model.Venta_EMDA_EXCH.GroupBy(g => new { g.Canal })
+                                            .Select(s => new
+                                            {
+                                                Canal = s.Key.Canal
+                                            }).ToList();
+
+                                totalRevenue = Model.Venta_EMDA_EXCH.Sum(s => s.Revenue_YQ);
+                                totalCupones = Model.Venta_EMDA_EXCH.Sum(s => s.Cupones);
+                                totalTransacc = Model.Venta_EMDA_EXCH.Sum(s => s.Transacciones);
+                                totalCanalRevenue = 0;
+                                totalCanalcupones = 0;
+                                totalCanalTransacc = 0;
+                                porcRevenue = 0;
+                                porcTax = 0;
+
+                            }
+
+
+                            @foreach (var itemVenta in listaCanalesDetalle)
+                            {
+                                <tr>
+                                    <td>@itemVenta.Canal</td>
+                                    @foreach (var item in Model.Fecha)
+                                    {
+                                        var detalleDia = Model.Venta_EMDA_EXCH.Where(w => w.Canal == itemVenta.Canal && w.Fecha == item).FirstOrDefault();
+
+
+                                        if (detalleDia != null)
+                                        {
+                                            <td class="text-right">@detalleDia.Revenue_YQ.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                            <td class="text-right">@detalleDia.Transacciones.ToString("N0", CultureInfo.CurrentCulture)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-right"></td>
+                                            <td class="text-right"></td>
+                                        }
+
+                                    }
+
+                                    @{
+                                        totalCanalRevenue = Model.Venta_EMDA_EXCH.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Revenue_YQ);
+                                        totalCanalTransacc = Model.Venta_EMDA_EXCH.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Transacciones);
+
+                                        try
+                                        {
+                                            tarifaMedia = totalCanalRevenue / (decimal)totalCanalTransacc;
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                            tarifaMedia = 0;
+                                        }
+
+                                    }
+
+                                    <td class="text-right">@totalCanalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+
+                                    <td class="text-right">@totalCanalTransacc.ToString("N0", CultureInfo.CurrentCulture)</td>
+                                    <td class="text-right">@tarifaMedia.ToString("N2", CultureInfo.CurrentCulture)</td>
+
+
+                                </tr>
+                            }
+                            <tr>
+                                <td style="font-weight:500;">Total</td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    if (Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ).ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+                                    if (Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Transacciones) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Transacciones).ToString("N0", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+
+                                }
+                                @{
+                                    try
+                                    {
+                                        tarifaMedia = totalRevenue / (decimal)totalTransacc;
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                        tarifaMedia = 0;
+                                    }
+
+                                }
+
+                                <td style="font-weight:500" class="text-right">@totalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">@totalTransacc.ToString("N0", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">@tarifaMedia.ToString("N2", CultureInfo.CurrentCulture)</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </article>
+        </div>
+
+
+        <div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">RFND</div>
+                <div class="py-3 px-2">
+
+
+                    <table class="table table-bordered table-responsive table-admin-full m-0 ">
+                        @*<table class="table table-bordered table-responsive table-admin-full m-0 tb-datatable-only-buttons">*@
+                        <thead>
+
+                            <tr>
+                                <th></th>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <th colspan="2" class="text-center">@item.ToString("dd/MM/yyyy")</th>
+
+                                }
+                                <th colspan="3" class="text-center">Acumulado del mes</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td></td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                    <td class="text-center">Nº&nbsp;CUPONES</td>
+                                }
+                                <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                <td class="text-center">Nº&nbsp;CUPONES</td>
+                                <td class="text-center">RFND&nbsp;MEDIO</td>
+
+                            </tr>
+                            @{
+                                listaCanalesDetalle = Model.Venta_RFND.GroupBy(g => new { g.Canal })
+                                            .Select(s => new
+                                            {
+                                                Canal = s.Key.Canal
+                                            }).ToList();
+
+                                totalRevenue = Model.Venta_RFND.Sum(s => s.Revenue_YQ);
+                                totalCupones = Model.Venta_RFND.Sum(s => s.Cupones);
+                                totalTransacc = Model.Venta_RFND.Sum(s => s.Transacciones);
+                                totalCanalRevenue = 0;
+                                totalCanalcupones = 0;
+                                totalCanalTransacc = 0;
+                                porcRevenue = 0;
+                                porcTax = 0;
+
+                            }
+
+
+                            @foreach (var itemVenta in listaCanalesDetalle)
+                            {
+                        <tr>
+                            <td>@itemVenta.Canal</td>
+                            @foreach (var item in Model.Fecha)
+                            {
+                                var detalleDia = Model.Venta_RFND.Where(w => w.Canal == itemVenta.Canal && w.Fecha == item).FirstOrDefault();
+
+
+                                if (detalleDia != null)
+                                {
+                                    <td class="text-right">@detalleDia.Revenue_YQ.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    @*<td class="text-right">@detalleDia.Cupones.ToString("N0", CultureInfo.CurrentCulture)</td>*@
+                                    <td class="text-right">@detalleDia.Transacciones.ToString("N0", CultureInfo.CurrentCulture)</td>
+                                }
+                                else
+                                {
+                                    <td class="text-right"></td>
+                                    <td class="text-right"></td>
+                                }
+
+                            }
+
+                            @{
+                                totalCanalRevenue = Model.Venta_RFND.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Revenue_YQ);
+                                //totalCanalcupones = Model.Venta_RFND.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Cupones);
+                                totalCanalTransacc = Model.Venta_RFND.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Transacciones);
+                                try
+                                {
+                                    //tarifaMedia = totalCanalRevenue / (decimal)totalCanalcupones;
+                                    tarifaMedia = totalCanalRevenue / (decimal)totalCanalTransacc;
+                                }
+                                catch (Exception)
+                                {
+
+                                    tarifaMedia = 0;
+                                }
+
+                            }
+
+                            <td class="text-right">@totalCanalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+
+                            @*<td class="text-right">@totalCanalcupones.ToString("N0", CultureInfo.CurrentCulture)</td>*@
+                            <td class="text-right">@totalCanalTransacc.ToString("N0", CultureInfo.CurrentCulture)</td>
+                            <td class="text-right">@tarifaMedia.ToString("N2", CultureInfo.CurrentCulture)</td>
+
+
+                        </tr>
+                            }
+                        <tr>
+                            <td style="font-weight:500;">Total</td>
+                            @foreach (var item in Model.Fecha)
+                            {
+                                if (Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ) != 0)
+                                {
+                                    <td style="font-weight:500" class="text-right">@Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ).ToString("N2", CultureInfo.CurrentCulture)</td>
+                                }
+                                else
+                                {
+                                    <td class="text-center"></td>
+                                }
+
+                                @*if (Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Cupones) != 0)
+            {
+                <td style="font-weight:500" class="text-right">@Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Cupones).ToString("N0", CultureInfo.CurrentCulture)</td>
+            }
+            else
+            {
+                <td class="text-center"></td>
+            }*@
+                                if (Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Transacciones) != 0)
+                                {
+                                    <td style="font-weight:500" class="text-right">@Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Transacciones).ToString("N0", CultureInfo.CurrentCulture)</td>
+                                }
+                                else
+                                {
+                                    <td class="text-center"></td>
+                                }
+
+                            }
+                            @{
+                                try
+                                {
+                                    //tarifaMedia = totalRevenue / (decimal)totalCupones;
+                                    tarifaMedia = totalRevenue / (decimal)totalTransacc;
+                                }
+                                catch (Exception)
+                                {
+
+                                    tarifaMedia = 0;
+                                }
+
+                            }
+
+                            <td style="font-weight:500" class="text-right">@totalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+                            @*<td style="font-weight:500" class="text-right">@totalCupones.ToString("N0", CultureInfo.CurrentCulture)</td>*@
+                            <td style="font-weight:500" class="text-right">@totalTransacc.ToString("N0", CultureInfo.CurrentCulture)</td>
+                            <td style="font-weight:500" class="text-right">@tarifaMedia.ToString("N2", CultureInfo.CurrentCulture)</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </article>
+        </div>
+
+
+
+        @*<div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">EMDA, EXCH</div>
+                <div class="py-3 px-2">
+
+
+                    <table class="table table-bordered table-responsive table-admin-full m-0 ">
+                        <table class="table table-bordered table-responsive table-admin-full m-0 tb-datatable-only-buttons">
+                        <thead>
+
+                            <tr>
+                                <th></th>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <th colspan="2" class="text-center">@item.ToString("dd/MM/yyyy")</th>
+
+                                }
+                                <th colspan="3" class="text-center">Acumulado del mes</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td></td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                    <td class="text-center">Nº&nbsp;CUPONES</td>
+                                }
+                                <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                <td class="text-center">Nº&nbsp;CUPONES</td>
+                                <td class="text-center">TARIFA&nbsp;MEDIA&nbsp;POR&nbsp;CUPON</td>
+
+                            </tr>
+
+                            @{
+                                listaCanalesDetalle = Model.Venta_EMDA_EXCH.GroupBy(g => new { g.Canal })
+                                            .Select(s => new
+                                            {
+                                                Canal = s.Key.Canal
+                                            }).ToList();
+
+                                totalRevenue = Model.Venta_EMDA_EXCH.Sum(s => s.Revenue_YQ);
+                                totalTax = Model.Venta_EMDA_EXCH.Sum(s => s.Tax_sin_YQ);
+                                totalCanalRevenue = 0;
+                                totalCanalTax = 0;
+                                porcRevenue = 0;
+                                porcTax = 0;
+
+                            }
+
+
+                            @foreach (var itemVenta in listaCanalesDetalle)
+                            {
+                                <tr>
+                                    <td>@itemVenta.Canal</td>
+                                    @foreach (var item in Model.Fecha)
+                                    {
+                                        var detalleDia = Model.Venta_EMDA_EXCH.Where(w => w.Canal == itemVenta.Canal && w.Fecha == item).FirstOrDefault();
+
+
+                                        if (detalleDia != null)
+                                        {
+                                            <td class="text-right">@detalleDia.Revenue_YQ.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                            <td class="text-right">@detalleDia.Tax_sin_YQ.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-right"></td>
+                                            <td class="text-right"></td>
+                                        }
+
+                                    }
+
+                                    @{
+                                        totalCanalRevenue = Model.Venta_EMDA_EXCH.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Revenue_YQ);
+                                        totalCanalTax = Model.Venta_EMDA_EXCH.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Tax_sin_YQ);
+                                        porcRevenue = Math.Round((totalCanalRevenue / totalRevenue) * 100, 2);
+                                        porcTax = Math.Round((totalCanalTax / totalTax) * 100, 2);
+                                    }
+
+                                    <td class="text-right">@totalCanalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    <td class="text-right">@porcRevenue%</td>
+                                    <td class="text-right">@totalCanalTax.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    <td class="text-right">@porcTax%</td>
+
+
+                                </tr>
+                            }
+                            <tr>
+                                <td style="font-weight:500;">Grand Total</td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    if (Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ).ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+                                    if (Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Tax_sin_YQ) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_EMDA_EXCH.Where(w => w.Fecha == item).Sum(s => s.Tax_sin_YQ).ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+
+                                }
+                                <td style="font-weight:500" class="text-right">@totalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">100%</td>
+                                <td style="font-weight:500" class="text-right">@totalTax.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">100%</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </article>
+        </div>
+
+        <div class="col col-12 col-md-12 col-lg-12 mb-4">
+            <article class="card admin-card h-100">
+                <div class="card-header">RFND</div>
+                <div class="py-3 px-2">
+
+
+                    <table class="table table-bordered table-responsive table-admin-full m-0 ">
+                        <table class="table table-bordered table-responsive table-admin-full m-0 tb-datatable-only-buttons">
+                        <thead>
+
+                            <tr>
+                                <th></th>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <th colspan="2" class="text-center">@item.ToString("dd/MM/yyyy")</th>
+
+                                }
+                                <th colspan="3" class="text-center">Acumulado del mes</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td></td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                    <td class="text-center">Nº&nbsp;CUPONES</td>
+                                }
+                                <td class="text-center">Revenue&nbsp;+&nbsp;YQ</td>
+                                <td class="text-center">Nº&nbsp;CUPONES</td>
+                                <td class="text-center">TARIFA&nbsp;MEDIA&nbsp;POR&nbsp;CUPON</td>
+
+                            </tr>
+
+                            @{
+                                listaCanalesDetalle = Model.Venta_RFND.GroupBy(g => new { g.Canal })
+                                            .Select(s => new
+                                            {
+                                                Canal = s.Key.Canal
+                                            }).ToList();
+
+                                totalRevenue = Model.Venta_RFND.Sum(s => s.Revenue_YQ);
+                                totalTax = Model.Venta_RFND.Sum(s => s.Tax_sin_YQ);
+                                totalCanalRevenue = 0;
+                                totalCanalTax = 0;
+                                porcRevenue = 0;
+                                porcTax = 0;
+
+                            }
+
+
+                            @foreach (var itemVenta in listaCanalesDetalle)
+                            {
+                                <tr>
+                                    <td>@itemVenta.Canal</td>
+                                    @foreach (var item in Model.Fecha)
+                                    {
+                                        var detalleDia = Model.Venta_RFND.Where(w => w.Canal == itemVenta.Canal && w.Fecha == item).FirstOrDefault();
+
+
+                                        if (detalleDia != null)
+                                        {
+                                            <td class="text-right">@detalleDia.Revenue_YQ.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                            <td class="text-right">@detalleDia.Tax_sin_YQ.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-right"></td>
+                                            <td class="text-right"></td>
+                                        }
+
+                                    }
+
+                                    @{
+                                        totalCanalRevenue = Model.Venta_RFND.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Revenue_YQ);
+                                        totalCanalTax = Model.Venta_RFND.Where(w => w.Canal == itemVenta.Canal).Sum(s => s.Tax_sin_YQ);
+                                        porcRevenue = Math.Round((totalCanalRevenue / totalRevenue) * 100, 2);
+                                        porcTax = Math.Round((totalCanalTax / totalTax) * 100, 2);
+                                    }
+
+                                    <td class="text-right">@totalCanalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    <td class="text-right">@porcRevenue%</td>
+                                    <td class="text-right">@totalCanalTax.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    <td class="text-right">@porcTax%</td>
+
+
+                                </tr>
+                            }
+                            <tr>
+                                <td style="font-weight:500;">Grand Total</td>
+                                @foreach (var item in Model.Fecha)
+                                {
+                                    if (Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Revenue_YQ).ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+                                    if (Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Tax_sin_YQ) != 0)
+                                    {
+                                        <td style="font-weight:500" class="text-right">@Model.Venta_RFND.Where(w => w.Fecha == item).Sum(s => s.Tax_sin_YQ).ToString("N2", CultureInfo.CurrentCulture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"></td>
+                                    }
+
+
+                                }
+                                <td style="font-weight:500" class="text-right">@totalRevenue.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">100%</td>
+                                <td style="font-weight:500" class="text-right">@totalTax.ToString("N2", CultureInfo.CurrentCulture)</td>
+                                <td style="font-weight:500" class="text-right">100%</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </article>
+        </div>*@
+    </div>
+
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        //var canvas = document.getElementById("bar-revenue");
+        //var ctx = canvas.getContext("2d");
+        //var myNewChart = new Chart(ctx, {
+        //    type: 'horizontalBar',
+        //    data: dataAgeChart
+        //});
+
+        //canvas.onclick = function (evt) {
+        //    var activePoints = myNewChart.getElementsAtEvent(evt);
+        //    if (activePoints[0]) {
+        //        var chartData = activePoints[0]['_chart'].config.data;
+        //        var idx = activePoints[0]['_index'];
+
+        //        var label = chartData.labels[idx];
+        //        var value = chartData.datasets[0].data[idx];
+
+        //        var url = "http://example.com/?label=" + label + "&value=" + value;
+        //        console.log(url);
+        //        alert(url);
+        //    }
+        //};
+        ////....
+    });
+
+
+</script>
+

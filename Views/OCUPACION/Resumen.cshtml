@@ -1,0 +1,248 @@
+﻿@model Intranet.ModelsApp.ResumenOcupacion
+@using System.Globalization;
+@{
+    ViewBag.Title = "Resumen";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+
+@*
+    <!-- Custom Plugin Style --> *@
+@section pluginStyle {
+    <!-- Chart.js -->
+    <!-- <link rel="stylesheet" href="~/content/css/chart.css">
+    <script src="~/content/js/chart.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js"></script>
+
+    <!-- Chartjs plugin Datalabels -->
+    <!-- <script src="~/content/js/chartjs-plugin-datalabels.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+    <script>
+        // Init the chartjs-plugin-datalabel
+        Chart.register(ChartDataLabels);
+
+        //Configuracion Global ChartJS
+        Chart.defaults.font.family = "'Montserrat', 'Helvetica', sans-serif";
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0,32,57,0.75)';
+        Chart.defaults.plugins.tooltip.titleFont.style = "normal";
+    </script>
+}
+
+@*
+    <!-- Custom Page Style --> *@
+@section style {
+    <style>
+        .box-line-r {
+            border-bottom: solid 1px rgba(0, 0, 0, 0.125);
+        }
+
+        @@media only screen and (min-width: 576px) {
+            .box-line-r {
+                border-bottom: none;
+                border-right: solid 1px rgba(0, 0, 0, 0.125);
+                ;
+            }
+        }
+    </style>
+}
+
+
+<div class="container-fluid py-4">
+    <h1 class="admin-big-title">RESUMEN DE OCUPACION</h1>
+    <span class="gn-orange-line mb-4"></span>
+
+    <div class="row">
+
+        <div class="col col-12 mb-4">
+            <div>
+                @using (Html.BeginForm())
+                {
+                    <div class="d-md-flex totalyearmounth">
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+
+                            <label for="ResumeByMonth"> Mes:</label>
+                            @Html.DropDownList("Month", null, htmlAttributes: new { @class = "form-control", @id = "ddlMonth" })
+                        </div>
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+                            <label for="ResumeByYear">Año:</label>
+                            @Html.DropDownList("Year", null, htmlAttributes: new { @class = "form-control", @id = "ddlYear" })
+                        </div>
+
+
+                        @*<div class="form-group  mr-sm-3">
+                            <br /> /
+
+                        </div>
+
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+
+                            <label for="ResumeByMonth"> Mes:</label>
+                            @Html.DropDownList("Month", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="form-group d-sm-inline-block mr-sm-3">
+                            <label for="ResumeByYear">Año:</label>
+                            @Html.DropDownList("Year", null, htmlAttributes: new { @class = "form-control" })
+                        </div>*@
+                        <div class="form-group d-sm-inline-block">
+                            <div class="h-100 d-flex align-items-end text-center">
+                                <button class="gn-btn-line-orange btn-icon mx-auto">Mostrar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <p style="text-align: left;font-size: small;font-weight: 500;">
+
+                    @{
+                        if (Model.FechaCarga != null)
+                        {
+                            <text>REPORTE DE OCUPACION AL </text> @Model.FechaCarga.ToString("d", CultureInfo.CurrentCulture)
+                        }
+                        else
+                        {
+                            <text>NO HAY INFORMACION </text>
+                        }
+
+
+
+                    }
+
+                </p>
+            </div>
+        </div>
+
+        @{
+            foreach (var itemRuta in Model.Rutas)
+            {
+
+
+
+                <div class="col col-12 col-md-12 col-lg-12 mb-4">
+                    <article class="card admin-card h-100">
+                        <div class="card-header">@Model.NombreRuta(itemRuta)</div>
+                        <div class="py-3 px-2">
+
+
+                            @{
+                                string _rutaIda = Model.RutaDescripcion(itemRuta, 1);
+                                string _rutaRetorno = Model.RutaDescripcion(itemRuta, 2);
+
+                            }
+
+                            <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Fecha</th>
+                                        <th class="text-center">Ofertado  @_rutaIda  </th>
+                                        <th class="text-center">Reservado @_rutaIda</th>
+                                        <th class="text-center">LF </th>
+                                        @*<th class="text-center">Load Factor Ida</th>*@
+                                        <th class="text-center">Ofertado @_rutaRetorno</th>
+                                        <th class="text-center">Reservado @_rutaRetorno</th>
+
+                                        @*<th class="text-center">Load Factor Vuelta</th>*@
+                                        <th class="text-center">LF </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var item in Model.OcupacionesDiarias.Where(w => w.Descripcion == itemRuta))
+                                        {
+
+                                                                        <tr>
+                                                                            <td class="text-center">
+                                                                                @item.Fecha.ToString("d", CultureInfo.CurrentCulture)
+                                                                            </td>
+                                                                            <td class="item-data-sm text-right">
+
+                                                                                @item.OfertaIda
+                                                                            </td>
+
+                                                                            <td class="item-data-sm text-right">
+                                                                                @item.ReservaIda
+                                                                            </td>
+                                                                            @if (item.OfertaIda != null)
+                                                                            {
+                                                                                <td class="item-data-sm text-right"> @item.LoadFactorIda% </td>
+                                                                            }
+                                                                            else
+                                                                            {
+
+                                                                                <td class="item-data-sm text-right"> </td>
+                                                                            }
+
+                                                                            @*<td class="item-data-sm text-right">
+        @item.LoadFactorIda
+        </td>*@
+
+                                                                            <td class="item-data-sm text-right">
+                                                                                @item.OfertaVuelta
+
+                                                                            </td>
+                                                                            <td class="item-data-sm text-right">
+                                                                                @item.ReservaVuelta
+                                                                            </td>
+                                                                            @if (item.OfertaVuelta != null)
+                                                                            {
+                                                                                <td class="item-data-sm text-right"> @item.LoadFactorVuelta%</td>
+                                                                            }
+                                                                            else
+                                                                            {
+
+                                                                                <td class="item-data-sm text-right"> </td>
+                                                                            }
+
+                                                                        </tr>
+
+                                        }
+
+
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                </div>
+                                        }
+                                    }
+
+
+
+    </div>
+
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        //var canvas = document.getElementById("bar-revenue");
+        //var ctx = canvas.getContext("2d");
+        //var myNewChart = new Chart(ctx, {
+        //    type: 'horizontalBar',
+        //    data: dataAgeChart
+        //});
+
+        //canvas.onclick = function (evt) {
+        //    var activePoints = myNewChart.getElementsAtEvent(evt);
+        //    if (activePoints[0]) {
+        //        var chartData = activePoints[0]['_chart'].config.data;
+        //        var idx = activePoints[0]['_index'];
+
+        //        var label = chartData.labels[idx];
+        //        var value = chartData.datasets[0].data[idx];
+
+        //        var url = "http://example.com/?label=" + label + "&value=" + value;
+        //        console.log(url);
+        //        alert(url);
+        //    }
+        //};
+        ////....
+    });
+
+
+</script>
+
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="30112934eec14998b4028eebf3f4d4f0" Name="Diagram1">
+        <EntityTypeShape EntityType="premierplus_intranetModel.MENU" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="premierplus_intranetModel.MENU_ROL" Width="1.5" PointX="3" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="premierplus_intranetModel.ROL" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="premierplus_intranetModel.USUARIO_ROL" Width="1.5" PointX="3" PointY="5.75" IsExpanded="true" />
+        <AssociationConnector Association="premierplus_intranetModel.FK_MENU_ROL_MENU_ROL" ManuallyRouted="false" />
+        <AssociationConnector Association="premierplus_intranetModel.FK_MENU_ROL_MENU_ROL1" ManuallyRouted="false" />
+        <AssociationConnector Association="premierplus_intranetModel.FK_USUARIO_ROL_USUARIO_ROL" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

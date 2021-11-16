@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name = "format-detection" content = "telephone=no">
+
+    <title>@ViewBag.Title - Premier Plus</title>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="~/content/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/content/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/content/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="~/content/img/favicon/site.webmanifest.json">
+    <link rel="mask-icon" href="~/content/img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="PremierPlus">
+    <meta name="application-name" content="PremierPlus">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Google Font - Montserrat -->
+    <link href="~/content/css/montserrat-font.css" rel="stylesheet">
+    <!-- Fontawesome -->
+    <link rel="stylesheet" href="~/content/font/font-awesome/css/all.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/content/css/bootstrap.min.css">
+
+    <!-- Custom Plugin Style -->
+    @RenderSection("pluginStyle", required: false)
+        
+    <!-- Styles -->
+    <link rel="stylesheet" href="~/content/css/premier-basic.css">
+    <link rel="stylesheet" href="~/content/css/premier-admin-style.css">
+
+    <!-- Custom Page Style -->
+    @RenderSection("style", required: false)
+
+</head>
+<body>
+    <main>
+
+        @RenderBody()
+
+    </main>
+
+    <!-- JQuery 3.5.1 -->
+    <script src="~/content/js/jquery-3.5.1.min.js"></script>
+    <!-- Pooper -->
+    <script src="~/content/js/popper.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/content/js/bootstrap.min.js"></script>
+    @RenderSection("script", required: false)
+</body>
+</html>

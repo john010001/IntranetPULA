@@ -1,0 +1,51 @@
+@model Intranet.ModelsApp.ResumenCanal
+@using System.Globalization;
+
+@if (Model != null && Model.ListaIndirectas != null && Model.ListaIndirectas.Count() > 0)
+{
+    <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+        <thead>
+            <tr>
+                <th>Canal</th>
+                <th class="text-center">Revenue</th>
+                <th class="text-center">Meta</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model.PorCanalIndirecta)
+                {
+                    <tr>
+                        <td>@item.Descripcion</td>
+                        <td class="item-data-sm text-right">
+                            @item.Revenue.ToString("N0", CultureInfo.CurrentCulture)
+                        </td>
+                        <td class="item-data-sm text-right">
+                            @item.Meta.ToString("N0", CultureInfo.CurrentCulture)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <table class="table table-bordered table-responsive-sm table-admin-full m-0 tb-datatable-only-buttons">
+        <thead>
+            <tr>
+                <th>Canal</th>
+                <th class="text-center">Revenue</th>
+                <th class="text-center">Meta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="3">
+                    Sin resultados...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

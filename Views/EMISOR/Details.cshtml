@@ -1,0 +1,43 @@
+﻿@model Intranet.Models.Data.EMISOR
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/LayoutAside.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EMISOR</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Mostrar)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Mostrar)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TIPOEMISOR.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TIPOEMISOR.Descripcion)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.IdEmisor }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
